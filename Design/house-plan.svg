@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-797 -845 2802 2192" width="2802" height="2192">
+  <defs><pattern id="roomPattern" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M-4 18 L18 -4 M5 23 L23 5" stroke="#dededb" stroke-width="1"/></pattern></defs>
+  <rect x="-797" y="-845" width="2802" height="2192" fill="white"/>
+  <rect x="200" y="100" width="450" height="150" fill="#f7f7f5" stroke="#d2d2cf"/>
+  <rect x="200" y="100" width="450" height="150" fill="url(#roomPattern)"/>
+  <text x="425" y="171" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="15" font-weight="600" fill="#20201f">현관 및 복도 · L1</text>
+  <text x="425" y="189" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" font-weight="400" fill="#666663">6.75 m² (약 2평)</text>
+  <rect x="-350" y="250" width="350" height="350" fill="#f7f7f5" stroke="#d2d2cf"/>
+  <rect x="-350" y="250" width="350" height="350" fill="url(#roomPattern)"/>
+  <text x="-175" y="421" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="15" font-weight="600" fill="#20201f">주방 · L1</text>
+  <text x="-175" y="439" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" font-weight="400" fill="#666663">12.25 m² (약 4평)</text>
+  <rect x="650" y="100" width="450" height="250" fill="#f7f7f5" stroke="#d2d2cf"/>
+  <rect x="650" y="100" width="450" height="250" fill="url(#roomPattern)"/>
+  <text x="875" y="221" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="15" font-weight="600" fill="#20201f">1층 방 1 · L1</text>
+  <text x="875" y="239" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" font-weight="400" fill="#666663">11.25 m² (약 3평)</text>
+  <rect x="-350" y="-350" width="550" height="600" fill="#f7f7f5" stroke="#d2d2cf"/>
+  <rect x="-350" y="-350" width="550" height="600" fill="url(#roomPattern)"/>
+  <text x="-75" y="-54" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="15" font-weight="600" fill="#20201f">거실 · L1</text>
+  <text x="-75" y="-36" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" font-weight="400" fill="#666663">33 m² (약 10평)</text>
+  <rect x="650" y="350" width="450" height="450" fill="#f7f7f5" stroke="#d2d2cf"/>
+  <rect x="650" y="350" width="450" height="450" fill="url(#roomPattern)"/>
+  <text x="875" y="571" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="15" font-weight="600" fill="#20201f">1층 방 2 · L1</text>
+  <text x="875" y="589" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" font-weight="400" fill="#666663">20.25 m² (약 6평)</text>
+  <rect x="0" y="250" width="200" height="150" fill="#f7f7f5" stroke="#d2d2cf"/>
+  <rect x="0" y="250" width="200" height="150" fill="url(#roomPattern)"/>
+  <text x="100" y="321" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="15" font-weight="600" fill="#20201f">화장실 1 · L1</text>
+  <text x="100" y="339" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" font-weight="400" fill="#666663">3 m² (약 1평)</text>
+  <rect x="-0" y="400" width="200" height="200" fill="#f7f7f5" stroke="#d2d2cf"/>
+  <rect x="-0" y="400" width="200" height="200" fill="url(#roomPattern)"/>
+  <text x="100" y="496" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="15" font-weight="600" fill="#20201f">다용도실 · L1</text>
+  <text x="100" y="514" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" font-weight="400" fill="#666663">4 m² (약 1평)</text>
+  <rect x="650" y="800" width="250" height="200" fill="#f7f7f5" stroke="#d2d2cf"/>
+  <rect x="650" y="800" width="250" height="200" fill="url(#roomPattern)"/>
+  <text x="775" y="896" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="15" font-weight="600" fill="#20201f">안방 화장실 · L1</text>
+  <text x="775" y="914" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" font-weight="400" fill="#666663">5 m² (약 2평)</text>
+  <rect x="900" y="800" width="200" height="200" fill="#f7f7f5" stroke="#d2d2cf"/>
+  <rect x="900" y="800" width="200" height="200" fill="url(#roomPattern)"/>
+  <text x="1000" y="896" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="15" font-weight="600" fill="#20201f">드레스룸 · L1</text>
+  <text x="1000" y="914" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" font-weight="400" fill="#666663">4 m² (약 1평)</text>
+  <line x1="-500" y1="-500" x2="1450" y2="-500" stroke="#000000" stroke-width="12" stroke-linecap="round"/>
+  <text x="475" y="-479" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#000000">1950 cm</text>
+  <line x1="-500" y1="-500" x2="-500" y2="900" stroke="#000000" stroke-width="12" stroke-linecap="round"/>
+  <text x="-518" y="203" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#000000">1400 cm</text>
+  <line x1="200" y1="250" x2="650" y2="250" stroke="#000000" stroke-width="12" stroke-linecap="round"/>
+  <text x="425" y="271" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#000000">450 cm</text>
+  <line x1="-350" y1="-350" x2="200" y2="-350" stroke="#000000" stroke-width="12" stroke-linecap="round"/>
+  <text x="-75" y="-329" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#000000">550 cm</text>
+  <line x1="-350" y1="-350" x2="-350" y2="600" stroke="#000000" stroke-width="12" stroke-linecap="round"/>
+  <text x="-368" y="128" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#000000">950 cm</text>
+  <line x1="200" y1="600" x2="-350" y2="600" stroke="#000000" stroke-width="12" stroke-linecap="round"/>
+  <text x="-75" y="585" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#000000">550 cm</text>
+  <line x1="200" y1="600" x2="200" y2="250" stroke="#000000" stroke-width="12" stroke-linecap="round"/>
+  <text x="218" y="428" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#000000">350 cm</text>
+  <line x1="200" y1="-350" x2="200" y2="100" stroke="#000000" stroke-width="12" stroke-linecap="round"/>
+  <text x="182" y="-122" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#000000">450 cm</text>
+  <line x1="200" y1="100" x2="650" y2="100" stroke="#000000" stroke-width="12" stroke-linecap="round"/>
+  <text x="425" y="121" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#000000">450 cm</text>
+  <line x1="650" y1="250" x2="650" y2="1000" stroke="#000000" stroke-width="12" stroke-linecap="round"/>
+  <text x="632" y="628" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#000000">750 cm</text>
+  <line x1="1100" y1="1000" x2="650" y2="1000" stroke="#000000" stroke-width="12" stroke-linecap="round"/>
+  <text x="875" y="985" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#000000">450 cm</text>
+  <line x1="1100" y1="1000" x2="1100" y2="100" stroke="#000000" stroke-width="12" stroke-linecap="round"/>
+  <text x="1118" y="553" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#000000">900 cm</text>
+  <line x1="650" y1="100" x2="1100" y2="100" stroke="#000000" stroke-width="12" stroke-linecap="round"/>
+  <text x="875" y="121" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#000000">450 cm</text>
+  <line x1="0" y1="400" x2="200" y2="400" stroke="#000000" stroke-width="12" stroke-linecap="round"/>
+  <text x="100" y="421" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#000000">200 cm</text>
+  <line x1="-0" y1="250" x2="200" y2="250" stroke="#000000" stroke-width="12" stroke-linecap="round"/>
+  <text x="100" y="271" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#000000">200 cm</text>
+  <line x1="0" y1="400" x2="-0" y2="250" stroke="#000000" stroke-width="12" stroke-linecap="round"/>
+  <text x="18" y="328" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#000000">150 cm</text>
+  <line x1="650" y1="350" x2="1100" y2="350" stroke="#000000" stroke-width="12" stroke-linecap="round"/>
+  <text x="875" y="371" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#000000">450 cm</text>
+  <line x1="650" y1="800" x2="900" y2="800" stroke="#000000" stroke-width="12" stroke-linecap="round"/>
+  <text x="775" y="821" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#000000">250 cm</text>
+  <line x1="501.679" y1="250" x2="381.679" y2="250" stroke="#ffffff" stroke-width="15" stroke-linecap="round"/>
+  <line x1="501.679" y1="250" x2="501.679" y2="370" stroke="#8b5e3c" stroke-width="2" stroke-linecap="round"/>
+  <path d="M 381.679 250 A 120 120 0 0 0 501.679 370" fill="none" stroke="#8b5e3c" stroke-width="1"/>
+  <text x="441.679" y="235" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#8b5e3c">120 cm</text>
+  <line x1="1099.011" y1="350" x2="1019.029" y2="350" stroke="#ffffff" stroke-width="15" stroke-linecap="round"/>
+  <line x1="1099.011" y1="350" x2="1099.011" y2="429.983" stroke="#8b5e3c" stroke-width="2" stroke-linecap="round"/>
+  <path d="M 1019.029 350 A 79.982 79.982 0 0 0 1099.011 429.983" fill="none" stroke="#8b5e3c" stroke-width="1"/>
+  <text x="1059.02" y="335" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#8b5e3c">80 cm</text>
+  <line x1="-199.693" y1="600" x2="-299.693" y2="600" stroke="#ffffff" stroke-width="15" stroke-linecap="round"/>
+  <line x1="-199.693" y1="597" x2="-299.693" y2="597" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+  <line x1="-199.693" y1="603" x2="-299.693" y2="603" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+  <line x1="-199.693" y1="606" x2="-199.693" y2="594" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+  <line x1="-299.693" y1="606" x2="-299.693" y2="594" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+  <line x1="-199.693" y1="597" x2="-299.693" y2="603" stroke="#2563eb" stroke-width="1" stroke-linecap="round"/>
+  <text x="-249.693" y="585" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#2563eb">100 cm</text>
+  <line x1="-301.948" y1="-350" x2="148.052" y2="-350" stroke="#ffffff" stroke-width="15" stroke-linecap="round"/>
+  <line x1="-301.948" y1="-347" x2="148.052" y2="-347" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+  <line x1="-301.948" y1="-353" x2="148.052" y2="-353" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+  <line x1="-301.948" y1="-356" x2="-301.948" y2="-344" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+  <line x1="148.052" y1="-356" x2="148.052" y2="-344" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+  <line x1="-301.948" y1="-347" x2="148.052" y2="-353" stroke="#2563eb" stroke-width="1" stroke-linecap="round"/>
+  <text x="-76.948" y="-329" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#2563eb">450 cm</text>
+  <line x1="-350" y1="-302.683" x2="-350" y2="-2.682" stroke="#ffffff" stroke-width="15" stroke-linecap="round"/>
+  <line x1="-353" y1="-302.683" x2="-353" y2="-2.682" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+  <line x1="-347" y1="-302.683" x2="-347" y2="-2.682" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+  <line x1="-344" y1="-302.683" x2="-356" y2="-302.683" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+  <line x1="-344" y1="-2.682" x2="-356" y2="-2.682" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+  <line x1="-353" y1="-302.683" x2="-347" y2="-2.682" stroke="#2563eb" stroke-width="1" stroke-linecap="round"/>
+  <text x="-368" y="-149.683" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#2563eb">300 cm</text>
+  <line x1="200" y1="-301.533" x2="200" y2="-1.532" stroke="#ffffff" stroke-width="15" stroke-linecap="round"/>
+  <line x1="197" y1="-301.533" x2="197" y2="-1.532" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+  <line x1="203" y1="-301.533" x2="203" y2="-1.532" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+  <line x1="206" y1="-301.533" x2="194" y2="-301.533" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+  <line x1="206" y1="-1.532" x2="194" y2="-1.532" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+  <line x1="197" y1="-301.533" x2="203" y2="-1.532" stroke="#2563eb" stroke-width="1" stroke-linecap="round"/>
+  <text x="182" y="-148.533" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#2563eb">300 cm</text>
+  <g transform="rotate(0 -250 560)">
+  <rect x="-350" y="520" width="200" height="80" rx="5" fill="#ebebe8" stroke="#6e6e6a" stroke-width="1.5"/>
+  <text x="-250" y="564" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12" font-weight="600" fill="#3e3e3b">싱크대</text>
+  <text x="-250" y="508" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#20201f">200 cm</text>
+  <text x="-135" y="563" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#20201f">80 cm</text>
+  </g>
+  <g transform="rotate(0 -317.5 442.5)">
+  <rect x="-347.5" y="370" width="60" height="145" rx="5" fill="#ebebe8" stroke="#6e6e6a" stroke-width="1.5"/>
+  <text x="-317.5" y="446.5" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12" font-weight="600" fill="#3e3e3b">싱크대</text>
+  <text x="-317.5" y="358" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#20201f">60 cm</text>
+  <text x="-272.5" y="445.5" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#20201f">145 cm</text>
+  </g>
+  <g transform="rotate(0 -200 220)">
+  <rect x="-250" y="120" width="100" height="200" rx="5" fill="#ebebe8" stroke="#6e6e6a" stroke-width="1.5"/>
+  <text x="-200" y="224" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12" font-weight="600" fill="#3e3e3b">식탁</text>
+  <text x="-200" y="108" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#20201f">100 cm</text>
+  <text x="-135" y="223" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#20201f">200 cm</text>
+  </g>
+  <g transform="rotate(180 130 360)">
+  <rect x="107.5" y="320" width="45" height="80" rx="5" fill="#ebebe8" stroke="#6e6e6a" stroke-width="1.5"/>
+  <text x="130" y="364" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12" font-weight="600" fill="#3e3e3b">변기</text>
+  <text x="130" y="308" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#20201f">45 cm</text>
+  <text x="167.5" y="363" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#20201f">80 cm</text>
+  </g>
+  <g transform="rotate(90 160 560)">
+  <rect x="125" y="525" width="70" height="70" rx="5" fill="#ebebe8" stroke="#6e6e6a" stroke-width="1.5"/>
+  <text x="160" y="564" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12" font-weight="600" fill="#3e3e3b">세탁기</text>
+  <text x="160" y="513" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#20201f">70 cm</text>
+  <text x="210" y="563" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#20201f">70 cm</text>
+  </g>
+  <g transform="rotate(0 330 130)">
+  <rect x="205" y="105" width="250" height="50" rx="5" fill="#ebebe8" stroke="#6e6e6a" stroke-width="1.5"/>
+  <line x1="230" y1="105" x2="230" y2="155" stroke="#777773" stroke-width="1" stroke-linecap="round"/>
+  <line x1="255" y1="105" x2="255" y2="155" stroke="#777773" stroke-width="1" stroke-linecap="round"/>
+  <line x1="280" y1="105" x2="280" y2="155" stroke="#777773" stroke-width="1" stroke-linecap="round"/>
+  <line x1="305" y1="105" x2="305" y2="155" stroke="#777773" stroke-width="1" stroke-linecap="round"/>
+  <line x1="330" y1="105" x2="330" y2="155" stroke="#777773" stroke-width="1" stroke-linecap="round"/>
+  <line x1="355" y1="105" x2="355" y2="155" stroke="#777773" stroke-width="1" stroke-linecap="round"/>
+  <line x1="380" y1="105" x2="380" y2="155" stroke="#777773" stroke-width="1" stroke-linecap="round"/>
+  <line x1="405" y1="105" x2="405" y2="155" stroke="#777773" stroke-width="1" stroke-linecap="round"/>
+  <line x1="430" y1="105" x2="430" y2="155" stroke="#777773" stroke-width="1" stroke-linecap="round"/>
+  <text x="330" y="134" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12" font-weight="600" fill="#3e3e3b">계단</text>
+  <text x="330" y="93" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#20201f">250 cm</text>
+  <text x="470" y="133" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#20201f">50 cm</text>
+  </g>
+  <g transform="rotate(0 300 380)">
+  <rect x="255" y="335" width="90" height="90" rx="5" fill="#ebebe8" stroke="#6e6e6a" stroke-width="1.5"/>
+  <text x="300" y="384" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12" font-weight="600" fill="#3e3e3b">샤워부스</text>
+  <text x="300" y="323" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#20201f">90 cm</text>
+  <text x="360" y="383" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#20201f">90 cm</text>
+  </g>
+  <g transform="rotate(0 710 900)">
+  <rect x="650" y="800" width="120" height="200" rx="5" fill="#ebebe8" stroke="#6e6e6a" stroke-width="1.5"/>
+  <text x="710" y="904" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12" font-weight="600" fill="#3e3e3b">샤워부스</text>
+  <text x="710" y="788" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#20201f">120 cm</text>
+  <text x="785" y="903" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#20201f">200 cm</text>
+  </g>
+  <text x="-680" y="200" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="72" font-weight="600" fill="#20201f" transform="rotate(0 -680 200)">차도</text>
+  <text x="330" y="1230" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="72" font-weight="600" fill="#20201f" transform="rotate(0 330 1230)">창고</text>
+  <line x1="600" y1="100" x2="600" y2="250" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="607" y1="100" x2="593" y2="100" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="607" y1="250" x2="593" y2="250" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="587" y="178" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#38bdf8">150 cm</text>
+  <line x1="200" y1="50" x2="650" y2="50" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="200" y1="43" x2="200" y2="57" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="650" y1="43" x2="650" y2="57" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="425" y="66" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#38bdf8">450 cm</text>
+  <line x1="650" y1="50" x2="1100" y2="50" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="650" y1="43" x2="650" y2="57" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="1100" y1="43" x2="1100" y2="57" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="875" y="66" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#38bdf8">450 cm</text>
+  <line x1="1150" y1="100" x2="1150" y2="1000" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="1157" y1="100" x2="1143" y2="100" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="1157" y1="1000" x2="1143" y2="1000" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="1137" y="553" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#38bdf8">900 cm</text>
+  <line x1="-350" y1="-400" x2="200" y2="-400" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="-350" y1="-407" x2="-350" y2="-393" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="200" y1="-407" x2="200" y2="-393" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="-75" y="-384" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#38bdf8">550 cm</text>
+  <line x1="-400" y1="-350" x2="-400" y2="250" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="-393" y1="-350" x2="-407" y2="-350" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="-393" y1="250" x2="-407" y2="250" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="-413" y="-47" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#38bdf8">600 cm</text>
+  <line x1="-400" y1="600" x2="-400" y2="250" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="-407" y1="600" x2="-393" y2="600" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="-407" y1="250" x2="-393" y2="250" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="-387" y="428" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#38bdf8">350 cm</text>
+  <line x1="-350" y1="650" x2="200" y2="650" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="-350" y1="643" x2="-350" y2="657" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="200" y1="643" x2="200" y2="657" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="-75" y="666" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#38bdf8">550 cm</text>
+  <line x1="200" y1="300" x2="380" y2="300" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="200" y1="293" x2="200" y2="307" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="380" y1="293" x2="380" y2="307" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="290" y="316" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#38bdf8">180 cm</text>
+  <line x1="500" y1="300" x2="650" y2="300" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="500" y1="293" x2="500" y2="307" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="650" y1="293" x2="650" y2="307" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="575" y="316" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#38bdf8">150 cm</text>
+  <line x1="-350" y1="250" x2="-250" y2="250" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="-350" y1="243" x2="-350" y2="257" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="-250" y1="243" x2="-250" y2="257" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="-300" y="266" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#38bdf8">100 cm</text>
+  <line x1="-150" y1="320" x2="-150" y2="520" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="-143" y1="320" x2="-157" y2="320" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="-143" y1="520" x2="-157" y2="520" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="-163" y="423" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#38bdf8">200 cm</text>
+  <line x1="0" y1="700" x2="200" y2="700" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="0" y1="693" x2="0" y2="707" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="200" y1="693" x2="200" y2="707" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="100" y="716" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#38bdf8">200 cm</text>
+  <line x1="250" y1="450" x2="250" y2="600" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="257" y1="450" x2="243" y2="450" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="257" y1="600" x2="243" y2="600" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="237" y="528" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#38bdf8">150 cm</text>
+  <line x1="-50" y1="250" x2="-50" y2="400" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="-43" y1="250" x2="-57" y2="250" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="-43" y1="400" x2="-57" y2="400" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="-63" y="328" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#38bdf8">150 cm</text>
+  <line x1="-150" y1="750" x2="-0" y2="750" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="-150" y1="743" x2="-150" y2="757" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="0" y1="743" x2="-0" y2="757" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="-75" y="766" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#38bdf8">150 cm</text>
+  <line x1="200" y1="400" x2="150" y2="400" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="200" y1="407" x2="200" y2="393" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="150" y1="407" x2="150" y2="393" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="175" y="390" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#38bdf8">50 cm</text>
+  <line x1="600" y1="350" x2="600" y2="800" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="607" y1="350" x2="593" y2="350" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="607" y1="800" x2="593" y2="800" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="587" y="578" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#38bdf8">450 cm</text>
+  <line x1="600" y1="800" x2="600" y2="1000" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="607" y1="800" x2="593" y2="800" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="607" y1="1000" x2="593" y2="1000" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="587" y="903" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#38bdf8">200 cm</text>
+  <line x1="250" y1="-350" x2="250" y2="-300" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="257" y1="-350" x2="243" y2="-350" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="257" y1="-300" x2="243" y2="-300" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="237" y="-322" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#38bdf8">50 cm</text>
+  <line x1="-380" y1="-350" x2="-380" y2="-300" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="-373" y1="-350" x2="-387" y2="-350" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="-373" y1="-300" x2="-387" y2="-300" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+  <text x="-393" y="-322" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#38bdf8">50 cm</text>
+  <rect x="1525" y="-845" width="480" height="330" rx="10" fill="#ffffff" stroke="#d8d8d5" stroke-width="1"/>
+  <text x="1541" y="-820" text-anchor="start" font-family="Segoe UI, sans-serif" font-size="11" font-weight="700" fill="#777774">PROPERTIES</text>
+  <text x="1541" y="-796" text-anchor="start" font-family="Segoe UI, sans-serif" font-size="10" font-weight="500" fill="#20201f">Grid</text>
+  <text x="1989" y="-796" text-anchor="end" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#20201f">10 cm</text>
+  <text x="1541" y="-777" text-anchor="start" font-family="Segoe UI, sans-serif" font-size="10" font-weight="500" fill="#20201f">Rooms / Walls</text>
+  <text x="1989" y="-777" text-anchor="end" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#20201f">9 / 18</text>
+  <text x="1541" y="-758" text-anchor="start" font-family="Segoe UI, sans-serif" font-size="10" font-weight="500" fill="#20201f">Doors / Windows</text>
+  <text x="1989" y="-758" text-anchor="end" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#20201f">2 / 4</text>
+  <text x="1541" y="-739" text-anchor="start" font-family="Segoe UI, sans-serif" font-size="10" font-weight="500" fill="#20201f">Furniture / Dimensions</text>
+  <text x="1989" y="-739" text-anchor="end" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#20201f">8 / 21</text>
+  <text x="1541" y="-715" text-anchor="start" font-family="Segoe UI, sans-serif" font-size="11" font-weight="600" fill="#20201f">Selection · 선택된 요소 없음</text>
+  <text x="1541" y="-698" text-anchor="start" font-family="Segoe UI, sans-serif" font-size="10" font-weight="400" fill="#666663">선택 도구로 요소를 클릭하세요.</text>
+  <line x1="1541" y1="-683" x2="1989" y2="-683" stroke="#e4e4e1"/>
+  <text x="1541" y="-670" text-anchor="start" font-family="Segoe UI, sans-serif" font-size="11" font-weight="700" fill="#777774">TOTAL</text>
+  <text x="1541" y="-646" text-anchor="start" font-family="Segoe UI, sans-serif" font-size="10" font-weight="500" fill="#20201f">Total Level Area</text>
+  <text x="1989" y="-646" text-anchor="end" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#20201f">99.5 m² (약 30평)</text>
+  <text x="1541" y="-626" text-anchor="start" font-family="Segoe UI, sans-serif" font-size="10" font-weight="500" fill="#666663">Level 1 Area</text>
+  <text x="1989" y="-626" text-anchor="end" font-family="Segoe UI, sans-serif" font-size="10" font-weight="600" fill="#666663">99.5 m² (약 30평)</text>
+</svg>

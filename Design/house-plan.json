@@ -1,0 +1,465 @@
+{
+  "Version": 1,
+  "GridSize": 10,
+  "IsGridSnapEnabled": true,
+  "Walls": [
+    {
+      "StartX": -500,
+      "StartY": -500,
+      "EndX": 1450,
+      "EndY": -500,
+      "Thickness": 12
+    },
+    {
+      "StartX": -500,
+      "StartY": -500,
+      "EndX": -500,
+      "EndY": 900,
+      "Thickness": 12
+    },
+    {
+      "StartX": 200,
+      "StartY": 250,
+      "EndX": 650,
+      "EndY": 250,
+      "Thickness": 12
+    },
+    {
+      "StartX": -350,
+      "StartY": -350,
+      "EndX": 200,
+      "EndY": -350,
+      "Thickness": 12
+    },
+    {
+      "StartX": -350,
+      "StartY": -350,
+      "EndX": -350,
+      "EndY": 600,
+      "Thickness": 12
+    },
+    {
+      "StartX": 200,
+      "StartY": 600,
+      "EndX": -350,
+      "EndY": 600,
+      "Thickness": 12
+    },
+    {
+      "StartX": 200,
+      "StartY": 600,
+      "EndX": 200,
+      "EndY": 250,
+      "Thickness": 12
+    },
+    {
+      "StartX": 200,
+      "StartY": -350,
+      "EndX": 200,
+      "EndY": 100,
+      "Thickness": 12
+    },
+    {
+      "StartX": 200,
+      "StartY": 100,
+      "EndX": 650,
+      "EndY": 100,
+      "Thickness": 12
+    },
+    {
+      "StartX": 650,
+      "StartY": 250,
+      "EndX": 650,
+      "EndY": 1000,
+      "Thickness": 12
+    },
+    {
+      "StartX": 1100,
+      "StartY": 1000,
+      "EndX": 650,
+      "EndY": 1000,
+      "Thickness": 12
+    },
+    {
+      "StartX": 1100,
+      "StartY": 1000,
+      "EndX": 1100,
+      "EndY": 100,
+      "Thickness": 12
+    },
+    {
+      "StartX": 650,
+      "StartY": 100,
+      "EndX": 1100,
+      "EndY": 100,
+      "Thickness": 12
+    },
+    {
+      "StartX": 0,
+      "StartY": 400,
+      "EndX": 200,
+      "EndY": 400,
+      "Thickness": 12
+    },
+    {
+      "StartX": -0,
+      "StartY": 250,
+      "EndX": 200,
+      "EndY": 250,
+      "Thickness": 12
+    },
+    {
+      "StartX": 0,
+      "StartY": 400,
+      "EndX": -0,
+      "EndY": 250,
+      "Thickness": 12
+    },
+    {
+      "StartX": 650,
+      "StartY": 350,
+      "EndX": 1100,
+      "EndY": 350,
+      "Thickness": 12
+    },
+    {
+      "StartX": 650,
+      "StartY": 800,
+      "EndX": 900,
+      "EndY": 800,
+      "Thickness": 12
+    }
+  ],
+  "Doors": [
+    {
+      "ParentWallIndex": 2,
+      "Position": 0.5370642942469304,
+      "Width": 120,
+      "RotationQuarterTurns": 1
+    },
+    {
+      "ParentWallIndex": 16,
+      "Position": 0.9089333333333338,
+      "Width": 79.9824999999999,
+      "RotationQuarterTurns": 1
+    }
+  ],
+  "Windows": [
+    {
+      "ParentWallIndex": 5,
+      "Position": 0.8176239338783957,
+      "Width": 100,
+      "RotationQuarterTurns": 0
+    },
+    {
+      "ParentWallIndex": 3,
+      "Position": 0.4964578843034223,
+      "Width": 450,
+      "RotationQuarterTurns": 0
+    },
+    {
+      "ParentWallIndex": 4,
+      "Position": 0.2077026315789474,
+      "Width": 300,
+      "RotationQuarterTurns": 0
+    },
+    {
+      "ParentWallIndex": 7,
+      "Position": 0.441038888888889,
+      "Width": 300,
+      "RotationQuarterTurns": 0
+    }
+  ],
+  "Furniture": [
+    {
+      "Kind": "Sink",
+      "X": -250,
+      "Y": 560,
+      "Width": 200,
+      "Height": 80,
+      "RotationDegrees": 0
+    },
+    {
+      "Kind": "Sink",
+      "X": -317.5,
+      "Y": 442.5,
+      "Width": 60,
+      "Height": 145,
+      "RotationDegrees": 0
+    },
+    {
+      "Kind": "DiningTable",
+      "X": -200,
+      "Y": 220,
+      "Width": 100,
+      "Height": 200,
+      "RotationDegrees": 0
+    },
+    {
+      "Kind": "Toilet",
+      "X": 130,
+      "Y": 360,
+      "Width": 45,
+      "Height": 80,
+      "RotationDegrees": 180
+    },
+    {
+      "Kind": "Washer",
+      "X": 160,
+      "Y": 560,
+      "Width": 70,
+      "Height": 70,
+      "RotationDegrees": 90
+    },
+    {
+      "Kind": "Stairs",
+      "X": 330,
+      "Y": 130,
+      "Width": 250,
+      "Height": 50,
+      "RotationDegrees": 0
+    },
+    {
+      "Kind": "Shower",
+      "X": 300,
+      "Y": 380,
+      "Width": 90,
+      "Height": 90,
+      "RotationDegrees": 0
+    },
+    {
+      "Kind": "Shower",
+      "X": 710,
+      "Y": 900,
+      "Width": 120,
+      "Height": 200,
+      "RotationDegrees": 0
+    },
+    {
+      "Kind": "Bathtub",
+      "X": -1000,
+      "Y": -10,
+      "Width": 170,
+      "Height": 75,
+      "RotationDegrees": 0
+    }
+  ],
+  "RoomLabels": [
+    {
+      "X": -680,
+      "Y": 200,
+      "Text": "\uCC28\uB3C4",
+      "FontSize": 72,
+      "RotationDegrees": 0
+    },
+    {
+      "X": 330,
+      "Y": 1230,
+      "Text": "\uCC3D\uACE0",
+      "FontSize": 72,
+      "RotationDegrees": 0
+    }
+  ],
+  "RoomAreas": [
+    {
+      "X": 200,
+      "Y": 100,
+      "Width": 450,
+      "Height": 150,
+      "Name": "\uD604\uAD00 \uBC0F \uBCF5\uB3C4",
+      "Level": 1
+    },
+    {
+      "X": -350,
+      "Y": 250,
+      "Width": 350,
+      "Height": 350,
+      "Name": "\uC8FC\uBC29",
+      "Level": 1
+    },
+    {
+      "X": 650,
+      "Y": 100,
+      "Width": 450,
+      "Height": 250,
+      "Name": "1\uCE35 \uBC29 1",
+      "Level": 1
+    },
+    {
+      "X": -350,
+      "Y": -350,
+      "Width": 550,
+      "Height": 600,
+      "Name": "\uAC70\uC2E4",
+      "Level": 1
+    },
+    {
+      "X": 650,
+      "Y": 350,
+      "Width": 450,
+      "Height": 450,
+      "Name": "1\uCE35 \uBC29 2",
+      "Level": 1
+    },
+    {
+      "X": 0,
+      "Y": 250,
+      "Width": 200,
+      "Height": 150,
+      "Name": "\uD654\uC7A5\uC2E4 1",
+      "Level": 1
+    },
+    {
+      "X": -0,
+      "Y": 400,
+      "Width": 200,
+      "Height": 200,
+      "Name": "\uB2E4\uC6A9\uB3C4\uC2E4",
+      "Level": 1
+    },
+    {
+      "X": 650,
+      "Y": 800,
+      "Width": 250,
+      "Height": 200,
+      "Name": "\uC548\uBC29 \uD654\uC7A5\uC2E4",
+      "Level": 1
+    },
+    {
+      "X": 900,
+      "Y": 800,
+      "Width": 200,
+      "Height": 200,
+      "Name": "\uB4DC\uB808\uC2A4\uB8F8",
+      "Level": 1
+    }
+  ],
+  "Dimensions": [
+    {
+      "StartX": 600,
+      "StartY": 100,
+      "EndX": 600,
+      "EndY": 250
+    },
+    {
+      "StartX": 200,
+      "StartY": 50,
+      "EndX": 650,
+      "EndY": 50
+    },
+    {
+      "StartX": 650,
+      "StartY": 50,
+      "EndX": 1100,
+      "EndY": 50
+    },
+    {
+      "StartX": 1150,
+      "StartY": 100,
+      "EndX": 1150,
+      "EndY": 1000
+    },
+    {
+      "StartX": -350,
+      "StartY": -400,
+      "EndX": 200,
+      "EndY": -400
+    },
+    {
+      "StartX": -400,
+      "StartY": -350,
+      "EndX": -400,
+      "EndY": 250
+    },
+    {
+      "StartX": -400,
+      "StartY": 600,
+      "EndX": -400,
+      "EndY": 250
+    },
+    {
+      "StartX": -350,
+      "StartY": 650,
+      "EndX": 200,
+      "EndY": 650
+    },
+    {
+      "StartX": 200,
+      "StartY": 300,
+      "EndX": 380,
+      "EndY": 300
+    },
+    {
+      "StartX": 500,
+      "StartY": 300,
+      "EndX": 650,
+      "EndY": 300
+    },
+    {
+      "StartX": -350,
+      "StartY": 250,
+      "EndX": -250,
+      "EndY": 250
+    },
+    {
+      "StartX": -150,
+      "StartY": 320,
+      "EndX": -150,
+      "EndY": 520
+    },
+    {
+      "StartX": 0,
+      "StartY": 700,
+      "EndX": 200,
+      "EndY": 700
+    },
+    {
+      "StartX": 250,
+      "StartY": 450,
+      "EndX": 250,
+      "EndY": 600
+    },
+    {
+      "StartX": -50,
+      "StartY": 250,
+      "EndX": -50,
+      "EndY": 400
+    },
+    {
+      "StartX": -150,
+      "StartY": 750,
+      "EndX": -0,
+      "EndY": 750
+    },
+    {
+      "StartX": 200,
+      "StartY": 400,
+      "EndX": 150,
+      "EndY": 400
+    },
+    {
+      "StartX": 600,
+      "StartY": 350,
+      "EndX": 600,
+      "EndY": 800
+    },
+    {
+      "StartX": 600,
+      "StartY": 800,
+      "EndX": 600,
+      "EndY": 1000
+    },
+    {
+      "StartX": 250,
+      "StartY": -350,
+      "EndX": 250,
+      "EndY": -300
+    },
+    {
+      "StartX": -380,
+      "StartY": -350,
+      "EndX": -380,
+      "EndY": -300
+    }
+  ]
+}
