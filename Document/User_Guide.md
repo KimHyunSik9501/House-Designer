@@ -12,8 +12,8 @@
 ## Development Environment
 
 * Language: C#
-* Framework: WPF or Avalonia
-* Platform: Windows
+* Framework: Avalonia 12
+* Platform: Windows, macOS, Linux
 * Architecture: MVVM을 권장하지만, 초기 구현이 지나치게 복잡해진다면 단순한 구조로 시작해도 됨
 
 ## Basic UI
@@ -39,7 +39,9 @@
 * 마우스 Wheel Zoom
 * Canvas Pan
 * 객체 선택
+* 드래그 범위 다중 선택 및 그룹 이동
 * 객체 이동
+* 방향키 정밀 이동
 * 객체 삭제
 
 ### 2. Wall
@@ -172,7 +174,7 @@ Rendering과 데이터를 가능한 분리해서 설계한다.
 
 한 번에 모든 기능을 구현하지 말고 아래 순서대로 구현해줘.
 
-1. WPF 프로젝트 기본 구조
+1. Avalonia 프로젝트 기본 구조
 2. Drawing Canvas
 3. Grid
 4. Zoom / Pan

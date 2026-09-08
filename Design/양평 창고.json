@@ -1,0 +1,241 @@
+{
+  "Version": 1,
+  "GridSize": 10,
+  "IsGridSnapEnabled": true,
+  "Walls": [
+    {
+      "StartX": 200,
+      "StartY": 200,
+      "EndX": 1350,
+      "EndY": 200,
+      "Thickness": 12
+    },
+    {
+      "StartX": 1350,
+      "StartY": 200,
+      "EndX": 1350,
+      "EndY": 750,
+      "Thickness": 12
+    },
+    {
+      "StartX": 200,
+      "StartY": 200,
+      "EndX": 200,
+      "EndY": 750,
+      "Thickness": 12
+    },
+    {
+      "StartX": 200,
+      "StartY": 750,
+      "EndX": 1350,
+      "EndY": 750,
+      "Thickness": 12
+    },
+    {
+      "StartX": 1000,
+      "StartY": 200,
+      "EndX": 1000,
+      "EndY": 450,
+      "Thickness": 12
+    },
+    {
+      "StartX": 1000,
+      "StartY": 450,
+      "EndX": 1350,
+      "EndY": 450,
+      "Thickness": 12
+    }
+  ],
+  "Doors": [
+    {
+      "ParentWallIndex": 3,
+      "Position": 0.5008695652173913,
+      "Width": 149.9999999999999,
+      "RotationQuarterTurns": 0
+    },
+    {
+      "ParentWallIndex": 5,
+      "Position": 0.19142857142857142,
+      "Width": 90,
+      "RotationQuarterTurns": 3
+    }
+  ],
+  "Windows": [
+    {
+      "ParentWallIndex": 3,
+      "Position": 0.15304347826086956,
+      "Width": 150,
+      "RotationQuarterTurns": 0
+    },
+    {
+      "ParentWallIndex": 3,
+      "Position": 0.8452173913043479,
+      "Width": 150,
+      "RotationQuarterTurns": 0
+    }
+  ],
+  "Furniture": [
+    {
+      "Kind": "Sink",
+      "X": 1300,
+      "Y": 625,
+      "Width": 150,
+      "Height": 99.99999999999999,
+      "RotationDegrees": 90
+    },
+    {
+      "Kind": "Toilet",
+      "X": 1302.5,
+      "Y": 277.5,
+      "Width": 44.99999999999999,
+      "Height": 85,
+      "RotationDegrees": 90
+    },
+    {
+      "Kind": "Washbasin",
+      "X": 1322.5,
+      "Y": 375,
+      "Width": 50,
+      "Height": 45,
+      "RotationDegrees": 90
+    },
+    {
+      "Kind": "DiningTable",
+      "X": 1000,
+      "Y": 660,
+      "Width": 180,
+      "Height": 100,
+      "RotationDegrees": 90
+    },
+    {
+      "Kind": "Shower",
+      "X": 1077.5,
+      "Y": 277.5,
+      "Width": 145,
+      "Height": 145,
+      "RotationDegrees": 0
+    }
+  ],
+  "RoomLabels": [
+    {
+      "X": 780,
+      "Y": 100,
+      "Text": "\uC591\uD3C9 \uCC3D\uACE0",
+      "FontSize": 53,
+      "RotationDegrees": 0
+    }
+  ],
+  "RoomAreas": [
+    {
+      "X": 1000,
+      "Y": 200,
+      "Width": 350,
+      "Height": 250,
+      "Name": "\uD654\uC7A5\uC2E4",
+      "Level": 1
+    },
+    {
+      "X": 950,
+      "Y": 500,
+      "Width": 400,
+      "Height": 250,
+      "Name": "\uC8FC\uBC29",
+      "Level": 1
+    },
+    {
+      "X": 200,
+      "Y": 200,
+      "Width": 400,
+      "Height": 550,
+      "Name": "\uBC29",
+      "Level": 1
+    }
+  ],
+  "Dimensions": [
+    {
+      "StartX": 200,
+      "StartY": 800,
+      "EndX": 700,
+      "EndY": 800
+    },
+    {
+      "StartX": 1350,
+      "StartY": 800,
+      "EndX": 850,
+      "EndY": 800
+    },
+    {
+      "StartX": 1350,
+      "StartY": 150,
+      "EndX": 1000,
+      "EndY": 150
+    },
+    {
+      "StartX": 1400,
+      "StartY": 200,
+      "EndX": 1400,
+      "EndY": 450
+    },
+    {
+      "StartX": 1400,
+      "StartY": 450,
+      "EndX": 1400,
+      "EndY": 500
+    },
+    {
+      "StartX": 1400,
+      "StartY": 500,
+      "EndX": 1400,
+      "EndY": 750
+    },
+    {
+      "StartX": 200,
+      "StartY": 150,
+      "EndX": 600,
+      "EndY": 150
+    },
+    {
+      "StartX": 150,
+      "StartY": 200,
+      "EndX": 150,
+      "EndY": 750
+    },
+    {
+      "StartX": 600,
+      "StartY": 700,
+      "EndX": 700,
+      "EndY": 700
+    },
+    {
+      "StartX": 850,
+      "StartY": 700,
+      "EndX": 950,
+      "EndY": 700
+    },
+    {
+      "StartX": 1450,
+      "StartY": 200,
+      "EndX": 1450,
+      "EndY": 250
+    },
+    {
+      "StartX": 1020,
+      "StartY": 470,
+      "EndX": 1000,
+      "EndY": 470
+    },
+    {
+      "StartX": 1450,
+      "StartY": 450,
+      "EndX": 1450,
+      "EndY": 400
+    },
+    {
+      "StartX": 1450,
+      "StartY": 300,
+      "EndX": 1450,
+      "EndY": 350
+    }
+  ],
+  "SiteElements": []
+}

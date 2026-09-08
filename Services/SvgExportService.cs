@@ -2,7 +2,6 @@ using System.Globalization;
 using System.IO;
 using System.Security;
 using System.Text;
-using System.Windows;
 using HouseDesigner.Models;
 
 namespace HouseDesigner.Services;
@@ -19,18 +18,20 @@ public static class SvgExportService
     {
         var drawingBounds = GetDrawingBounds(plan);
         drawingBounds.Inflate(Margin, Margin);
-        var detailLines = selectedElementDetails.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
         var levelCount = Math.Max(1, plan.RoomAreas.Select(room => room.Level).Distinct().Count());
-        var panelWidth = Math.Clamp(drawingBounds.Width * .3, 280, 480);
-        var panelHeight = Math.Max(330, 245 + detailLines.Length * 17 + levelCount * 20);
+        var panelWidth = Math.Clamp(drawingBounds.Width * .32, 390, 540);
+        var panelHeight = Math.Max(340, 310 + levelCount * 29);
         var bounds = new Rect(drawingBounds.X, drawingBounds.Y,
-            drawingBounds.Width + 24 + panelWidth, Math.Max(drawingBounds.Height, panelHeight));
+            drawingBounds.Width + 24 + panelWidth + 18, Math.Max(drawingBounds.Height, panelHeight + 28));
         var panelX = drawingBounds.Right + 24;
-        var panelY = drawingBounds.Top;
+        var panelY = drawingBounds.Top + 10;
         var svg = new StringBuilder();
         svg.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         svg.AppendLine($"<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"{F(bounds.X)} {F(bounds.Y)} {F(bounds.Width)} {F(bounds.Height)}\" width=\"{F(bounds.Width)}\" height=\"{F(bounds.Height)}\">");
-        svg.AppendLine("  <defs><pattern id=\"roomPattern\" width=\"18\" height=\"18\" patternUnits=\"userSpaceOnUse\"><path d=\"M-4 18 L18 -4 M5 23 L23 5\" stroke=\"#dededb\" stroke-width=\"1\"/></pattern></defs>");
+        svg.AppendLine("  <defs>");
+        svg.AppendLine("    <pattern id=\"roomPattern\" width=\"18\" height=\"18\" patternUnits=\"userSpaceOnUse\"><path d=\"M-4 18 L18 -4 M5 23 L23 5\" stroke=\"#dededb\" stroke-width=\"1\"/></pattern>");
+        svg.AppendLine("    <filter id=\"panelShadow\" x=\"-15%\" y=\"-15%\" width=\"130%\" height=\"140%\"><feDropShadow dx=\"0\" dy=\"5\" stdDeviation=\"8\" flood-color=\"#20201f\" flood-opacity=\"0.12\"/></filter>");
+        svg.AppendLine("  </defs>");
         svg.AppendLine($"  <rect x=\"{F(bounds.X)}\" y=\"{F(bounds.Y)}\" width=\"{F(bounds.Width)}\" height=\"{F(bounds.Height)}\" fill=\"white\"/>");
 
         DrawSiteElements(svg, plan);
@@ -41,8 +42,7 @@ public static class SvgExportService
         DrawRoomAreaLabels(svg, plan);
         DrawLabels(svg, plan);
         DrawDimensions(svg, plan);
-        DrawInformationPanel(svg, plan, gridSize, selectedElementName, detailLines,
-            new Rect(panelX, panelY, panelWidth, panelHeight));
+        DrawInformationPanel(svg, plan, gridSize, new Rect(panelX, panelY, panelWidth, panelHeight));
         svg.AppendLine("</svg>");
         File.WriteAllText(path, svg.ToString(), new UTF8Encoding(false));
     }
@@ -199,52 +199,50 @@ public static class SvgExportService
         }
     }
 
-    private static void DrawInformationPanel(StringBuilder svg, FloorPlan plan, double gridSize,
-        string selectedElementName, IReadOnlyList<string> selectedDetails, Rect panel)
+    private static void DrawInformationPanel(StringBuilder svg, FloorPlan plan, double gridSize, Rect panel)
     {
-        svg.AppendLine($"  <rect x=\"{F(panel.X)}\" y=\"{F(panel.Y)}\" width=\"{F(panel.Width)}\" height=\"{F(panel.Height)}\" rx=\"10\" fill=\"#ffffff\" stroke=\"#d8d8d5\" stroke-width=\"1\"/>");
-        var left = panel.X + 16;
-        var right = panel.Right - 16;
-        var y = panel.Y + 25;
+        svg.AppendLine($"  <rect x=\"{F(panel.X)}\" y=\"{F(panel.Y)}\" width=\"{F(panel.Width)}\" height=\"{F(panel.Height)}\" rx=\"16\" fill=\"#f6f6f4\" stroke=\"#d8d8d4\" stroke-width=\"1\" filter=\"url(#panelShadow)\"/>");
+        var left = panel.X + 24;
+        var right = panel.Right - 24;
+        var sectionX = panel.X + 14;
+        var sectionWidth = panel.Width - 28;
 
-        AppendText(svg, left, y, "PROPERTIES", 11, "#777774", "700", "start");
-        y += 24;
-        AppendInfoRow(svg, left, right, y, "Grid", $"{gridSize:0.#} cm");
-        y += 19;
-        AppendInfoRow(svg, left, right, y, "Rooms / Walls", $"{plan.RoomAreas.Count} / {plan.Walls.Count}");
-        y += 19;
-        AppendInfoRow(svg, left, right, y, "Doors / Windows", $"{plan.Doors.Count} / {plan.Windows.Count}");
-        y += 19;
-        AppendInfoRow(svg, left, right, y, "Furniture / Site", $"{plan.FurnitureItems.Count} / {plan.SiteElements.Count}");
-        y += 19;
-        AppendInfoRow(svg, left, right, y, "Dimensions", $"{plan.Dimensions.Count}");
-        y += 24;
-        AppendText(svg, left, y, $"Selection · {selectedElementName}", 11, "#20201f", "600", "start");
-        foreach (var detail in selectedDetails)
-        {
-            y += 17;
-            AppendText(svg, left, y, detail, 10, "#666663", "400", "start");
-        }
+        svg.AppendLine($"  <rect x=\"{F(sectionX)}\" y=\"{F(panel.Y + 14)}\" width=\"{F(sectionWidth)}\" height=\"44\" rx=\"11\" fill=\"#242423\"/>");
+        AppendText(svg, left, panel.Y + 42, "PROPERTIES (속성)", 13, "#ffffff", "700", "start");
 
-        y += 28;
-        svg.AppendLine($"  <line x1=\"{F(left)}\" y1=\"{F(y - 13)}\" x2=\"{F(right)}\" y2=\"{F(y - 13)}\" stroke=\"#e4e4e1\"/>");
-        AppendText(svg, left, y, "TOTAL", 11, "#777774", "700", "start");
-        y += 24;
+        var y = panel.Y + 86;
+        AppendInfoRow(svg, left, right, y, "Grid (격자)", $"{gridSize:0.#} cm");
+        y += 29;
+        AppendInfoRow(svg, left, right, y, "Rooms / Walls (방 / 벽)", $"{plan.RoomAreas.Count} / {plan.Walls.Count}");
+        y += 29;
+        AppendInfoRow(svg, left, right, y, "Doors / Windows (문 / 창문)", $"{plan.Doors.Count} / {plan.Windows.Count}");
+        y += 29;
+        AppendInfoRow(svg, left, right, y, "Furniture / Site (가구·설비 / 대지)",
+            $"{plan.FurnitureItems.Count} / {plan.SiteElements.Count}");
+        y += 29;
+        AppendInfoRow(svg, left, right, y, "Dimensions (치수선)", $"{plan.Dimensions.Count}");
+
+        y += 35;
+        svg.AppendLine($"  <rect x=\"{F(sectionX)}\" y=\"{F(y - 27)}\" width=\"{F(sectionWidth)}\" height=\"42\" rx=\"10\" fill=\"#e7e7e3\"/>");
+        AppendText(svg, left, y, "TOTAL (합계)", 13, "#242423", "700", "start");
+        y += 40;
         var totalSquareMeters = plan.RoomAreas.Sum(room => room.AreaSquareMeters);
-        AppendInfoRow(svg, left, right, y, "Total Level Area", FormatArea(totalSquareMeters));
+        AppendInfoRow(svg, left, right, y, "Total Level Area (전체 층 면적)", FormatArea(totalSquareMeters), true);
         foreach (var level in plan.RoomAreas.GroupBy(room => room.Level).OrderBy(group => group.Key))
         {
-            y += 20;
-            AppendInfoRow(svg, left, right, y, $"Level {level.Key} Area",
-                FormatArea(level.Sum(room => room.AreaSquareMeters)), "#666663");
+            y += 29;
+            AppendInfoRow(svg, left, right, y, $"Level {level.Key} Area ({level.Key}층 면적)",
+                FormatArea(level.Sum(room => room.AreaSquareMeters)));
         }
     }
 
     private static void AppendInfoRow(StringBuilder svg, double left, double right, double y,
-        string label, string value, string color = "#20201f")
+        string label, string value, bool emphasized = false)
     {
-        AppendText(svg, left, y, label, 10, color, "500", "start");
-        AppendText(svg, right, y, value, 10, color, "600", "end");
+        svg.AppendLine($"  <rect x=\"{F(left - 10)}\" y=\"{F(y - 19)}\" width=\"{F(right - left + 20)}\" height=\"28\" rx=\"7\" fill=\"{(emphasized ? "#ffffff" : "#fbfbfa")}\"{(emphasized ? " stroke=\"#d8d8d4\" stroke-width=\"1\"" : string.Empty)}/>");
+        AppendText(svg, left, y, label, 11.5, emphasized ? "#242423" : "#5f5f5b",
+            emphasized ? "650" : "500", "start");
+        AppendText(svg, right, y, value, 12, "#242423", "700", "end");
     }
 
     private static string FormatArea(double squareMeters) =>
@@ -358,7 +356,7 @@ public static class SvgExportService
 
     private static void AppendText(StringBuilder svg, double x, double y, string value, double size,
         string color, string weight, string anchor = "middle", string? transform = null) =>
-        svg.AppendLine($"  <text x=\"{F(x)}\" y=\"{F(y)}\" text-anchor=\"{anchor}\" font-family=\"Segoe UI, sans-serif\" font-size=\"{F(size)}\" font-weight=\"{weight}\" fill=\"{color}\"{(transform is null ? string.Empty : $" transform=\"{transform}\"")}>{SecurityElement.Escape(value)}</text>");
+        svg.AppendLine($"  <text x=\"{F(x)}\" y=\"{F(y)}\" text-anchor=\"{anchor}\" font-family=\"'Inter', 'Pretendard', 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif\" font-size=\"{F(size)}\" font-weight=\"{weight}\" fill=\"{color}\"{(transform is null ? string.Empty : $" transform=\"{transform}\"")}>{SecurityElement.Escape(value)}</text>");
 
     private static string F(double value) => value.ToString("0.###", CultureInfo.InvariantCulture);
 

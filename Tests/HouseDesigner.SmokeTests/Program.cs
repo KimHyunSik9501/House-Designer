@@ -1,5 +1,4 @@
 using System.IO;
-using System.Windows;
 using HouseDesigner.Models;
 using HouseDesigner.Services;
 using HouseDesigner.ViewModels;
@@ -60,7 +59,14 @@ try
     Assert(svg.Contains("viewBox="), "SVG 도면 맞춤 viewBox 누락");
     Assert(svg.Contains("#38bdf8"), "SVG 치수선 색상 누락");
     Assert(svg.Contains("거실 · L2"), "SVG 방 Level 표시 누락");
-    Assert(svg.Contains("PROPERTIES") && svg.Contains("TOTAL"), "SVG 정보 패널 누락");
+    Assert(svg.Contains("PROPERTIES (속성)") && svg.Contains("TOTAL (합계)"), "SVG 한영 정보 패널 누락");
+    Assert(svg.Contains("Grid (격자)") && svg.Contains("Rooms / Walls (방 / 벽)"), "SVG 속성 한글 병기 누락");
+    Assert(svg.Contains("Doors / Windows (문 / 창문)") && svg.Contains("Dimensions (치수선)"), "SVG 요소 한글 병기 누락");
+    Assert(svg.Contains("Total Level Area (전체 층 면적)") && svg.Contains("Level 2 Area (2층 면적)"),
+        "SVG 면적 한글 병기 누락");
+    Assert(svg.Contains("filter=\"url(#panelShadow)\"") && svg.Contains("font-size=\"13\""),
+        "SVG 정보 패널 시각 스타일 누락");
+    Assert(!svg.Contains("Selection ·", StringComparison.OrdinalIgnoreCase), "SVG 선택 요소 정보가 제거되지 않음");
     Assert(svg.Contains("rotate(90"), "SVG 가구 회전 누락");
     Assert(svg.Contains("#dc2626"), "SVG 빨간색 일반 치수 누락");
     Assert(svg.Contains("fill-opacity=\"0.45\""), "SVG 가구 투명도 누락");
@@ -68,6 +74,10 @@ try
     Assert(svg.IndexOf("fill-opacity=\"0.45\"", StringComparison.Ordinal) < svg.IndexOf("거실 · L2", StringComparison.Ordinal), "SVG 가구 후면 순서 실패");
 
     var viewModel = new MainViewModel();
+    viewModel.SelectionCount = 3;
+    Assert(viewModel.SelectedElementName == "3개 요소 선택", "다중 선택 개수 표시 실패");
+    Assert(viewModel.SelectedElementDetails.Contains("함께 드래그"), "다중 선택 안내 표시 실패");
+    viewModel.SelectionCount = 0;
     foreach (var room in loaded.FloorPlan.RoomAreas)
     {
         viewModel.FloorPlan.RoomAreas.Add(room);

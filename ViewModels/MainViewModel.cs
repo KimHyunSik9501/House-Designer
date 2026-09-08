@@ -5,7 +5,6 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using HouseDesigner.Models;
 using HouseDesigner.Services;
-using Microsoft.Win32;
 
 namespace HouseDesigner.ViewModels;
 
@@ -18,13 +17,16 @@ public sealed class MainViewModel : INotifyPropertyChanged
     private FurnitureKind _selectedFurnitureKind = FurnitureKind.Bed;
     private SiteElementKind _selectedSiteElementKind = SiteElementKind.Road;
     private PlanElement? _selectedElement;
+    private int _selectionCount;
     private string? _currentFilePath;
     private string _statusMessage = "새 도면 · 저장되지 않음";
     private bool _isInternalOperation;
     private readonly HashSet<RoomArea> _trackedRoomAreas = [];
+    private readonly IFileDialogService? _fileDialogs;
 
-    public MainViewModel()
+    public MainViewModel(IFileDialogService? fileDialogs = null)
     {
+        _fileDialogs = fileDialogs;
         SelectToolCommand = new RelayCommand(parameter =>
         {
             if (parameter is string value && Enum.TryParse<EditorTool>(value, out var tool))
@@ -46,11 +48,11 @@ public sealed class MainViewModel : INotifyPropertyChanged
                 SelectedElement = null;
             }
         }, _ => SelectedElement is not null);
-        SaveCommand = new RelayCommand(_ => SaveDocument(false));
-        SaveAsCommand = new RelayCommand(_ => SaveDocument(true));
-        LoadCommand = new RelayCommand(_ => LoadDocument());
-        ExportCsvCommand = new RelayCommand(_ => ExportCsv(), _ => ElementCount > 0);
-        ExportSvgCommand = new RelayCommand(_ => ExportSvg(), _ => ElementCount > 0);
+        SaveCommand = new RelayCommand(async _ => await SaveDocumentAsync(false));
+        SaveAsCommand = new RelayCommand(async _ => await SaveDocumentAsync(true));
+        LoadCommand = new RelayCommand(async _ => await LoadDocumentAsync());
+        ExportCsvCommand = new RelayCommand(async _ => await ExportCsvAsync(), _ => ElementCount > 0);
+        ExportSvgCommand = new RelayCommand(async _ => await ExportSvgAsync(), _ => ElementCount > 0);
         PlaceStairsCommand = new RelayCommand(_ =>
         {
             SelectedFurnitureKind = FurnitureKind.Stairs;
@@ -232,6 +234,19 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
     }
 
+    public int SelectionCount
+    {
+        get => _selectionCount;
+        set
+        {
+            if (SetField(ref _selectionCount, Math.Max(0, value)))
+            {
+                OnPropertyChanged(nameof(SelectedElementName));
+                OnPropertyChanged(nameof(SelectedElementDetails));
+            }
+        }
+    }
+
     public string SelectedRoomName
     {
         get => SelectedElement switch
@@ -315,7 +330,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
             var direction = end - start;
             if (direction.Length < .001)
             {
-                direction = new System.Windows.Vector(1, 0);
+                direction = new Vector(1, 0);
             }
             else
             {
@@ -358,7 +373,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
                     furniture.Width = value.Value;
                     break;
                 case RoomArea room:
-                    room.Bounds = new System.Windows.Rect(room.Bounds.X, room.Bounds.Y, value.Value, room.Bounds.Height);
+                    room.Bounds = new Rect(room.Bounds.X, room.Bounds.Y, value.Value, room.Bounds.Height);
                     break;
                 case SiteElement siteElement:
                     siteElement.Width = value.Value;
@@ -388,7 +403,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
             }
             else if (SelectedElement is RoomArea room)
             {
-                room.Bounds = new System.Windows.Rect(room.Bounds.X, room.Bounds.Y, room.Bounds.Width, value.Value);
+                room.Bounds = new Rect(room.Bounds.X, room.Bounds.Y, room.Bounds.Width, value.Value);
             }
             else if (SelectedElement is SiteElement siteElement)
             {
@@ -431,7 +446,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
 
     public bool CanEditFontSize => SelectedElement is RoomLabel;
 
-    public string SelectedElementName => SelectedElement switch
+    public string SelectedElementName => SelectionCount > 1 ? $"{SelectionCount}개 요소 선택" : SelectedElement switch
     {
         Wall => "벽",
         Door => "문",
@@ -444,7 +459,9 @@ public sealed class MainViewModel : INotifyPropertyChanged
         _ => "선택된 요소 없음"
     };
 
-    public string SelectedElementDetails => SelectedElement switch
+    public string SelectedElementDetails => SelectionCount > 1
+        ? "선택된 요소를 함께 드래그하거나 방향키로 이동할 수 있습니다."
+        : SelectedElement switch
     {
         Wall wall => $"길이  {wall.Length:0.#} cm\n두께  {wall.Thickness:0.#} cm\n시작  ({wall.StartPoint.X:0.#}, {wall.StartPoint.Y:0.#})\n끝  ({wall.EndPoint.X:0.#}, {wall.EndPoint.Y:0.#})",
         Door door => $"너비  {door.Width:0.#} cm\n방향  {door.RotationQuarterTurns * 90}°\n벽 위 위치  {door.Position:P0}",
@@ -574,27 +591,22 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
     }
 
-    private void SaveDocument(bool forceChoosePath)
+    private async Task SaveDocumentAsync(bool forceChoosePath)
     {
         try
         {
             var path = !forceChoosePath ? _currentFilePath : null;
             if (path is null)
             {
-                var dialog = new SaveFileDialog
-                {
-                    Title = "도면 저장",
-                    Filter = "House Designer JSON (*.json)|*.json",
-                    DefaultExt = ".json",
-                    AddExtension = true,
-                    FileName = _currentFilePath is null ? "house-plan.json" : Path.GetFileName(_currentFilePath),
-                    InitialDirectory = GetDesignDirectory()
-                };
-                if (dialog.ShowDialog() != true)
+                if (_fileDialogs is null)
                 {
                     return;
                 }
-                path = ToPreferredRelativePath(dialog.FileName);
+                var selectedPath = await _fileDialogs.SaveFileAsync("도면 저장",
+                    _currentFilePath is null ? "house-plan.json" : Path.GetFileName(_currentFilePath),
+                    "json", "House Designer JSON", GetDesignDirectory());
+                if (selectedPath is null) return;
+                path = ToPreferredRelativePath(selectedPath);
             }
 
             _isInternalOperation = true;
@@ -605,7 +617,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception exception)
         {
-            ShowFileError("도면을 저장하지 못했습니다.", exception);
+            await ShowFileErrorAsync("도면을 저장하지 못했습니다.", exception);
         }
         finally
         {
@@ -613,24 +625,17 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
     }
 
-    private void LoadDocument()
+    private async Task LoadDocumentAsync()
     {
-        var dialog = new OpenFileDialog
-        {
-            Title = "도면 불러오기",
-            Filter = "House Designer JSON (*.json)|*.json|모든 파일 (*.*)|*.*",
-            DefaultExt = ".json",
-            InitialDirectory = GetDesignDirectory()
-        };
-        if (dialog.ShowDialog() != true)
-        {
-            return;
-        }
+        if (_fileDialogs is null) return;
+        var selectedPath = await _fileDialogs.OpenFileAsync("도면 불러오기", "json", "House Designer JSON",
+            GetDesignDirectory());
+        if (selectedPath is null) return;
 
         try
         {
             _isInternalOperation = true;
-            var documentPath = ToPreferredRelativePath(dialog.FileName);
+            var documentPath = ToPreferredRelativePath(selectedPath);
             var document = PlanDocumentService.Load(documentPath);
             SelectedElement = null;
             ReplaceFloorPlan(document.FloorPlan);
@@ -638,11 +643,11 @@ public sealed class MainViewModel : INotifyPropertyChanged
             IsGridSnapEnabled = document.IsGridSnapEnabled;
             _currentFilePath = documentPath;
             OnPropertyChanged(nameof(DocumentTitle));
-            StatusMessage = $"불러옴 · {Path.GetFileName(dialog.FileName)}";
+            StatusMessage = $"불러옴 · {Path.GetFileName(selectedPath)}";
         }
         catch (Exception exception)
         {
-            ShowFileError("도면을 불러오지 못했습니다.", exception);
+            await ShowFileErrorAsync("도면을 불러오지 못했습니다.", exception);
         }
         finally
         {
@@ -650,56 +655,38 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
     }
 
-    private void ExportCsv()
+    private async Task ExportCsvAsync()
     {
-        var dialog = new SaveFileDialog
-        {
-            Title = "요소 데이터 CSV 내보내기",
-            Filter = "CSV 파일 (*.csv)|*.csv",
-            DefaultExt = ".csv",
-            AddExtension = true,
-            FileName = GetExportBaseName() + ".csv",
-            InitialDirectory = GetDesignDirectory()
-        };
-        if (dialog.ShowDialog() != true)
-        {
-            return;
-        }
+        if (_fileDialogs is null) return;
+        var path = await _fileDialogs.SaveFileAsync("요소 데이터 CSV 내보내기",
+            GetExportBaseName() + ".csv", "csv", "CSV 파일", GetDesignDirectory());
+        if (path is null) return;
         try
         {
-            CsvExportService.Export(dialog.FileName, FloorPlan);
-            StatusMessage = $"CSV 내보내기 완료 · {Path.GetFileName(dialog.FileName)}";
+            CsvExportService.Export(path, FloorPlan);
+            StatusMessage = $"CSV 내보내기 완료 · {Path.GetFileName(path)}";
         }
         catch (Exception exception)
         {
-            ShowFileError("CSV 파일을 만들지 못했습니다.", exception);
+            await ShowFileErrorAsync("CSV 파일을 만들지 못했습니다.", exception);
         }
     }
 
-    private void ExportSvg()
+    private async Task ExportSvgAsync()
     {
-        var dialog = new SaveFileDialog
-        {
-            Title = "도면 맞춤 SVG 내보내기",
-            Filter = "SVG 벡터 도면 (*.svg)|*.svg",
-            DefaultExt = ".svg",
-            AddExtension = true,
-            FileName = GetExportBaseName() + ".svg",
-            InitialDirectory = GetDesignDirectory()
-        };
-        if (dialog.ShowDialog() != true)
-        {
-            return;
-        }
+        if (_fileDialogs is null) return;
+        var path = await _fileDialogs.SaveFileAsync("도면 맞춤 SVG 내보내기",
+            GetExportBaseName() + ".svg", "svg", "SVG 벡터 도면", GetDesignDirectory());
+        if (path is null) return;
         try
         {
-            SvgExportService.Export(dialog.FileName, FloorPlan, GridSize,
+            SvgExportService.Export(path, FloorPlan, GridSize,
                 SelectedElementName, SelectedElementDetails);
-            StatusMessage = $"SVG 내보내기 완료 · {Path.GetFileName(dialog.FileName)}";
+            StatusMessage = $"SVG 내보내기 완료 · {Path.GetFileName(path)}";
         }
         catch (Exception exception)
         {
-            ShowFileError("SVG 파일을 만들지 못했습니다.", exception);
+            await ShowFileErrorAsync("SVG 파일을 만들지 못했습니다.", exception);
         }
     }
 
@@ -736,11 +723,13 @@ public sealed class MainViewModel : INotifyPropertyChanged
             : relativePath;
     }
 
-    private void ShowFileError(string message, Exception exception)
+    private async Task ShowFileErrorAsync(string message, Exception exception)
     {
         StatusMessage = message;
-        System.Windows.MessageBox.Show($"{message}\n\n{exception.Message}", "House Designer",
-            System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+        if (_fileDialogs is not null)
+        {
+            await _fileDialogs.ShowErrorAsync(message, exception);
+        }
     }
 
     private static void SetOpeningWidth(WallOpening opening, double width)

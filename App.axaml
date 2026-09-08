@@ -1,0 +1,50 @@
+<Application x:Class="HouseDesigner.App"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             RequestedThemeVariant="Light">
+    <Application.Styles>
+        <FluentTheme />
+
+        <Style Selector="Button">
+            <Setter Property="Foreground" Value="#FF242423" />
+            <Setter Property="Background" Value="#FFF1F1EF" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="13,7" />
+            <Setter Property="Margin" Value="3" />
+            <Setter Property="MinHeight" Value="34" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style Selector="Button:pointerover">
+            <Setter Property="Background" Value="#FFE7E7E4" />
+        </Style>
+        <Style Selector="Button:pressed">
+            <Setter Property="Background" Value="#FFDADAD6" />
+        </Style>
+        <Style Selector="Button.tool">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="MinHeight" Value="38" />
+        </Style>
+        <Style Selector="TextBox">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="#FFD8D8D5" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="7,5" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="ComboBox">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="#FFD8D8D5" />
+            <Setter Property="Padding" Value="6,4" />
+            <Setter Property="MinHeight" Value="34" />
+        </Style>
+    </Application.Styles>
+
+    <Application.Resources>
+        <SolidColorBrush x:Key="PanelBackgroundBrush" Color="#FFF7F7F6" />
+        <SolidColorBrush x:Key="BorderBrush" Color="#FFE4E4E1" />
+        <SolidColorBrush x:Key="AccentBrush" Color="#FF20201F" />
+        <SolidColorBrush x:Key="MutedTextBrush" Color="#FF777774" />
+    </Application.Resources>
+</Application>

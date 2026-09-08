@@ -67,7 +67,7 @@ public static class CsvExportService
         File.WriteAllText(path, csv.ToString(), new UTF8Encoding(true));
     }
 
-    private static System.Windows.Point GetOpeningCenter(WallOpening opening)
+    private static Point GetOpeningCenter(WallOpening opening)
     {
         var vector = opening.ParentWall.EndPoint - opening.ParentWall.StartPoint;
         return opening.ParentWall.StartPoint + vector * opening.Position;

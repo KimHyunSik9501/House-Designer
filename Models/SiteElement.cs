@@ -1,5 +1,3 @@
-using System.Windows;
-
 namespace HouseDesigner.Models;
 
 public enum SiteElementKind

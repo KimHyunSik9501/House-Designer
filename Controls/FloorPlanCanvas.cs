@@ -1,18 +1,23 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Data;
+using Avalonia.Input;
+using Avalonia.Media;
 using HouseDesigner.Models;
 using HouseDesigner.ViewModels;
+using Point = HouseDesigner.Models.Point;
+using Rect = HouseDesigner.Models.Rect;
+using Vector = HouseDesigner.Models.Vector;
 
 namespace HouseDesigner.Controls;
 
 /// <summary>
 /// 모델 좌표(1 단위 = 1 cm)를 화면에 렌더링하고 모든 편집 입력을 처리합니다.
 /// </summary>
-public sealed class FloorPlanCanvas : FrameworkElement
+public sealed class FloorPlanCanvas : Control
 {
     private enum ResizeHandle
     {
@@ -38,40 +43,43 @@ public sealed class FloorPlanCanvas : FrameworkElement
         LabelScale
     }
 
-    public static readonly DependencyProperty FloorPlanProperty = DependencyProperty.Register(
-        nameof(FloorPlan), typeof(FloorPlan), typeof(FloorPlanCanvas),
-        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender, OnFloorPlanChanged));
-    public static readonly DependencyProperty ActiveToolProperty = DependencyProperty.Register(
-        nameof(ActiveTool), typeof(EditorTool), typeof(FloorPlanCanvas),
-        new FrameworkPropertyMetadata(EditorTool.Wall, FrameworkPropertyMetadataOptions.AffectsRender, OnToolChanged));
-    public static readonly DependencyProperty IsGridSnapEnabledProperty = DependencyProperty.Register(
-        nameof(IsGridSnapEnabled), typeof(bool), typeof(FloorPlanCanvas),
-        new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsRender));
-    public static readonly DependencyProperty GridSizeProperty = DependencyProperty.Register(
-        nameof(GridSize), typeof(double), typeof(FloorPlanCanvas),
-        new FrameworkPropertyMetadata(10d, FrameworkPropertyMetadataOptions.AffectsRender));
-    public static readonly DependencyProperty SelectedElementProperty = DependencyProperty.Register(
-        nameof(SelectedElement), typeof(PlanElement), typeof(FloorPlanCanvas),
-        new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.AffectsRender));
-    public static readonly DependencyProperty SelectedFurnitureKindProperty = DependencyProperty.Register(
-        nameof(SelectedFurnitureKind), typeof(FurnitureKind), typeof(FloorPlanCanvas),
-        new FrameworkPropertyMetadata(FurnitureKind.Bed, FrameworkPropertyMetadataOptions.AffectsRender));
-    public static readonly DependencyProperty SelectedSiteElementKindProperty = DependencyProperty.Register(
-        nameof(SelectedSiteElementKind), typeof(SiteElementKind), typeof(FloorPlanCanvas),
-        new FrameworkPropertyMetadata(SiteElementKind.Road, FrameworkPropertyMetadataOptions.AffectsRender));
+    private readonly record struct ElementDragState(Point First, Point Second, Rect Bounds);
+
+    public static readonly StyledProperty<FloorPlan?> FloorPlanProperty =
+        AvaloniaProperty.Register<FloorPlanCanvas, FloorPlan?>(nameof(FloorPlan));
+    public static readonly StyledProperty<EditorTool> ActiveToolProperty =
+        AvaloniaProperty.Register<FloorPlanCanvas, EditorTool>(nameof(ActiveTool), EditorTool.Wall);
+    public static readonly StyledProperty<bool> IsGridSnapEnabledProperty =
+        AvaloniaProperty.Register<FloorPlanCanvas, bool>(nameof(IsGridSnapEnabled), true);
+    public static readonly StyledProperty<double> GridSizeProperty =
+        AvaloniaProperty.Register<FloorPlanCanvas, double>(nameof(GridSize), 10d);
+    public static readonly StyledProperty<PlanElement?> SelectedElementProperty =
+        AvaloniaProperty.Register<FloorPlanCanvas, PlanElement?>(nameof(SelectedElement),
+            defaultBindingMode: BindingMode.TwoWay);
+    public static readonly StyledProperty<int> SelectionCountProperty =
+        AvaloniaProperty.Register<FloorPlanCanvas, int>(nameof(SelectionCount),
+            defaultBindingMode: BindingMode.TwoWay);
+    public static readonly StyledProperty<FurnitureKind> SelectedFurnitureKindProperty =
+        AvaloniaProperty.Register<FloorPlanCanvas, FurnitureKind>(nameof(SelectedFurnitureKind), FurnitureKind.Bed);
+    public static readonly StyledProperty<SiteElementKind> SelectedSiteElementKindProperty =
+        AvaloniaProperty.Register<FloorPlanCanvas, SiteElementKind>(nameof(SelectedSiteElementKind), SiteElementKind.Road);
 
     private const double MinimumZoom = 0.25;
     private const double MaximumZoom = 5;
-    private static readonly Brush WallBrush = Brushes.Black;
-    private static readonly Brush DoorBrush = new SolidColorBrush(Color.FromRgb(139, 94, 60));
-    private static readonly Brush WindowBrush = new SolidColorBrush(Color.FromRgb(37, 99, 235));
-    private static readonly Brush DimensionBrush = new SolidColorBrush(Color.FromRgb(56, 189, 248));
-    private static readonly Brush MeasurementTextBrush = new SolidColorBrush(Color.FromRgb(220, 38, 38));
-    private static readonly Brush AccentBrush = new SolidColorBrush(Color.FromRgb(38, 38, 38));
-    private static readonly Brush SelectionBrush = new SolidColorBrush(Color.FromRgb(92, 92, 92));
+    private static readonly IBrush WallBrush = Brushes.Black;
+    private static readonly IBrush DoorBrush = new SolidColorBrush(Color.FromRgb(139, 94, 60));
+    private static readonly IBrush WindowBrush = new SolidColorBrush(Color.FromRgb(37, 99, 235));
+    private static readonly IBrush DimensionBrush = new SolidColorBrush(Color.FromRgb(56, 189, 248));
+    private static readonly IBrush MeasurementTextBrush = new SolidColorBrush(Color.FromRgb(220, 38, 38));
+    private static readonly IBrush AccentBrush = new SolidColorBrush(Color.FromRgb(38, 38, 38));
+    private static readonly IBrush SelectionBrush = new SolidColorBrush(Color.FromRgb(92, 92, 92));
     private readonly Pen _minorGridPen = new(new SolidColorBrush(Color.FromRgb(235, 235, 232)), 1);
     private readonly Pen _majorGridPen = new(new SolidColorBrush(Color.FromRgb(211, 211, 207)), 1);
-    private readonly Pen _previewPen = new(AccentBrush, 2) { DashStyle = DashStyles.Dash };
+    private readonly Pen _previewPen = new(AccentBrush, 2, dashStyle: DashStyle.Dash);
+    private readonly Pen _marqueePen = new(new SolidColorBrush(Color.FromRgb(37, 99, 235)), 1.5,
+        dashStyle: DashStyle.Dash);
+    private readonly HashSet<PlanElement> _selectedElements = [];
+    private readonly Dictionary<PlanElement, ElementDragState> _dragStates = [];
 
     private Point? _wallStart;
     private Point? _roomStart;
@@ -82,29 +90,28 @@ public sealed class FloorPlanCanvas : FrameworkElement
     private Point _panOrigin;
     private bool _isPanning;
     private bool _isDragging;
+    private bool _isMarqueeSelecting;
+    private bool _isUpdatingSelectionProperty;
+    private Point _marqueeStart;
+    private Point _marqueeEnd;
     private ResizeHandle _activeResizeHandle;
     private Point _dragStartWorld;
-    private Point _dragElementOrigin;
-    private Point _dragWallStart;
-    private Point _dragWallEnd;
-    private Rect _dragRoomBounds;
     private double _resizeOpeningFixedPosition;
     private Point _resizeFurnitureOpposite;
     private Point _resizeStartScreen;
     private double _resizeOriginalFontSize;
     private double _zoom = 1;
+    private IPointer? _activePointer;
 
     public FloorPlanCanvas()
     {
         Focusable = true;
         ClipToBounds = true;
-        Cursor = Cursors.Cross;
-        MouseLeftButtonDown += OnMouseLeftButtonDown;
-        MouseLeftButtonUp += OnMouseLeftButtonUp;
-        MouseRightButtonDown += BeginPan;
-        MouseRightButtonUp += EndPan;
-        MouseMove += OnMouseMove;
-        MouseWheel += OnMouseWheel;
+        Cursor = new Cursor(StandardCursorType.Cross);
+        PointerPressed += OnPointerPressed;
+        PointerReleased += OnPointerReleased;
+        PointerMoved += OnPointerMoved;
+        PointerWheelChanged += OnPointerWheelChanged;
     }
 
     public FloorPlan? FloorPlan
@@ -137,6 +144,12 @@ public sealed class FloorPlanCanvas : FrameworkElement
         set => SetValue(SelectedElementProperty, value);
     }
 
+    public int SelectionCount
+    {
+        get => GetValue(SelectionCountProperty);
+        set => SetValue(SelectionCountProperty, value);
+    }
+
     public FurnitureKind SelectedFurnitureKind
     {
         get => (FurnitureKind)GetValue(SelectedFurnitureKindProperty);
@@ -149,10 +162,10 @@ public sealed class FloorPlanCanvas : FrameworkElement
         set => SetValue(SelectedSiteElementKindProperty, value);
     }
 
-    protected override void OnRender(DrawingContext context)
+    public override void Render(DrawingContext context)
     {
-        base.OnRender(context);
-        context.DrawRectangle(Brushes.White, null, new Rect(RenderSize));
+        base.Render(context);
+        context.DrawRectangle(Brushes.White, null, new Rect(Bounds.Size));
         DrawGrid(context);
         DrawSiteElements(context);
         DrawRoomAreas(context);
@@ -163,18 +176,19 @@ public sealed class FloorPlanCanvas : FrameworkElement
         DrawRoomLabels(context);
         DrawDimensions(context);
         DrawSelectionHandles(context);
+        DrawSelectionMarquee(context);
         DrawPlacementPreview(context);
         DrawHelp(context);
     }
 
     private void DrawGrid(DrawingContext context)
     {
-        if (GridSize <= 0 || ActualWidth <= 0 || ActualHeight <= 0)
+        if (GridSize <= 0 || Bounds.Width <= 0 || Bounds.Height <= 0)
         {
             return;
         }
         var topLeft = ScreenToWorld(new Point(0, 0));
-        var bottomRight = ScreenToWorld(new Point(ActualWidth, ActualHeight));
+        var bottomRight = ScreenToWorld(new Point(Bounds.Width, Bounds.Height));
         var firstX = Math.Floor(topLeft.X / GridSize) * GridSize;
         var firstY = Math.Floor(topLeft.Y / GridSize) * GridSize;
         for (var x = firstX; x <= bottomRight.X; x += GridSize)
@@ -182,14 +196,14 @@ public sealed class FloorPlanCanvas : FrameworkElement
             var screenX = WorldToScreen(new Point(x, 0)).X;
             var index = (long)Math.Round(x / GridSize);
             context.DrawLine(index % 5 == 0 ? _majorGridPen : _minorGridPen,
-                new Point(screenX, 0), new Point(screenX, ActualHeight));
+                new Point(screenX, 0), new Point(screenX, Bounds.Height));
         }
         for (var y = firstY; y <= bottomRight.Y; y += GridSize)
         {
             var screenY = WorldToScreen(new Point(0, y)).Y;
             var index = (long)Math.Round(y / GridSize);
             context.DrawLine(index % 5 == 0 ? _majorGridPen : _minorGridPen,
-                new Point(0, screenY), new Point(ActualWidth, screenY));
+                new Point(0, screenY), new Point(Bounds.Width, screenY));
         }
     }
 
@@ -205,14 +219,15 @@ public sealed class FloorPlanCanvas : FrameworkElement
             var width = element.Width * _zoom;
             var height = element.Height * _zoom;
             var rect = new Rect(center.X - width / 2, center.Y - height / 2, width, height);
-            var selected = ReferenceEquals(SelectedElement, element);
-            context.PushTransform(new RotateTransform(element.RotationDegrees, center.X, center.Y));
+            var selected = IsSelected(element);
+            var transformState = context.PushTransform(CreateRotationAt(element.RotationDegrees, center));
             var borderPen = new Pen(selected ? SelectionBrush : new SolidColorBrush(Color.FromRgb(105, 105, 101)), selected ? 3 : 1.5);
             switch (element.Kind)
             {
                 case SiteElementKind.Road:
-                    context.DrawRoundedRectangle(new SolidColorBrush(Color.FromArgb(125, 150, 150, 146)), borderPen, rect, 8, 8);
-                    var centerPen = new Pen(new SolidColorBrush(Color.FromArgb(180, 255, 255, 255)), 2) { DashStyle = DashStyles.Dash };
+                    context.DrawRectangle(new SolidColorBrush(Color.FromArgb(125, 150, 150, 146)), borderPen, rect, 8, 8);
+                    var centerPen = new Pen(new SolidColorBrush(Color.FromArgb(180, 255, 255, 255)), 2,
+                        dashStyle: DashStyle.Dash);
                     context.DrawLine(centerPen, new Point(rect.Left + 12, center.Y), new Point(rect.Right - 12, center.Y));
                     break;
                 case SiteElementKind.Tree:
@@ -221,7 +236,7 @@ public sealed class FloorPlanCanvas : FrameworkElement
                     context.DrawLine(borderPen, new Point(rect.Left + 8, center.Y), new Point(rect.Right - 8, center.Y));
                     break;
                 case SiteElementKind.Bench:
-                    context.DrawRoundedRectangle(new SolidColorBrush(Color.FromArgb(125, 150, 132, 111)), borderPen, rect, 5, 5);
+                    context.DrawRectangle(new SolidColorBrush(Color.FromArgb(125, 150, 132, 111)), borderPen, rect, 5, 5);
                     for (var y = rect.Top + rect.Height / 4; y < rect.Bottom; y += Math.Max(5, rect.Height / 4))
                     {
                         context.DrawLine(new Pen(new SolidColorBrush(Color.FromArgb(150, 100, 84, 68)), 1),
@@ -234,7 +249,7 @@ public sealed class FloorPlanCanvas : FrameworkElement
                 $"{element.Width:0.#} cm", MeasurementTextBrush, -15);
             DrawScreenMeasurementLabel(context, rect.TopRight, rect.BottomRight,
                 $"{element.Height:0.#} cm", MeasurementTextBrush, -15);
-            context.Pop();
+            transformState.Dispose();
         }
     }
 
@@ -247,17 +262,17 @@ public sealed class FloorPlanCanvas : FrameworkElement
         foreach (var room in FloorPlan.RoomAreas)
         {
             var rect = WorldRectToScreen(room.Bounds);
-            var selected = ReferenceEquals(SelectedElement, room);
+            var selected = IsSelected(room);
             context.DrawRectangle(new SolidColorBrush(Color.FromRgb(247, 247, 245)),
                 new Pen(selected ? SelectionBrush : new SolidColorBrush(Color.FromRgb(210, 210, 207)), selected ? 2 : 1), rect);
 
-            context.PushClip(new RectangleGeometry(rect));
+            var clipState = context.PushClip(rect);
             var patternPen = new Pen(new SolidColorBrush(Color.FromArgb(55, 100, 100, 96)), 1);
             for (var x = rect.Left - rect.Height; x < rect.Right; x += 18)
             {
                 context.DrawLine(patternPen, new Point(x, rect.Bottom), new Point(x + rect.Height, rect.Top));
             }
-            context.Pop();
+            clipState.Dispose();
 
         }
     }
@@ -272,13 +287,13 @@ public sealed class FloorPlanCanvas : FrameworkElement
         {
             var rect = WorldRectToScreen(room.Bounds);
             var center = new Point(rect.Left + rect.Width / 2, rect.Top + rect.Height / 2);
-            var nameText = CreateText($"{room.Name} · L{room.Level}", Math.Clamp(15 * _zoom, 11, 18), WallBrush, FontWeights.SemiBold);
+            var nameText = CreateText($"{room.Name} · L{room.Level}", Math.Clamp(15 * _zoom, 11, 18), WallBrush, FontWeight.SemiBold);
             var areaText = CreateText($"{room.AreaSquareMeters:0.##} m² (약 {Math.Round(room.AreaPyeong):0}평)", Math.Clamp(11 * _zoom, 9, 14),
                 new SolidColorBrush(Color.FromRgb(100, 100, 96)));
             var labelRect = new Rect(center.X - Math.Max(nameText.Width, areaText.Width) / 2 - 9,
                 center.Y - (nameText.Height + areaText.Height) / 2 - 5,
                 Math.Max(nameText.Width, areaText.Width) + 18, nameText.Height + areaText.Height + 10);
-            context.DrawRoundedRectangle(new SolidColorBrush(Color.FromArgb(238, 255, 255, 255)), null, labelRect, 4, 4);
+            context.DrawRectangle(new SolidColorBrush(Color.FromArgb(238, 255, 255, 255)), null, labelRect, 4, 4);
             context.DrawText(nameText, new Point(center.X - nameText.Width / 2, labelRect.Top + 4));
             context.DrawText(areaText, new Point(center.X - areaText.Width / 2, labelRect.Top + 4 + nameText.Height));
         }
@@ -294,12 +309,12 @@ public sealed class FloorPlanCanvas : FrameworkElement
         {
             var start = WorldToScreen(wall.StartPoint);
             var end = WorldToScreen(wall.EndPoint);
-            if (ReferenceEquals(SelectedElement, wall))
+            if (IsSelected(wall))
             {
                 context.DrawLine(new Pen(SelectionBrush, Math.Max(5, wall.Thickness * _zoom + 6)), start, end);
             }
             context.DrawLine(new Pen(WallBrush, Math.Max(2, wall.Thickness * _zoom)), start, end);
-            DrawLengthLabel(context, wall.StartPoint, wall.EndPoint, wall.Length, ReferenceEquals(SelectedElement, wall));
+            DrawLengthLabel(context, wall.StartPoint, wall.EndPoint, wall.Length, IsSelected(wall));
         }
     }
 
@@ -336,7 +351,7 @@ public sealed class FloorPlanCanvas : FrameworkElement
         var leafEnd = hinge + normal * width;
         var wallThickness = Math.Max(3, door.ParentWall.Thickness * _zoom + 3);
         context.DrawLine(new Pen(Brushes.White, wallThickness), hinge, jamb);
-        if (ReferenceEquals(SelectedElement, door))
+        if (IsSelected(door))
         {
             context.DrawEllipse(null, new Pen(SelectionBrush, 3), center, width / 2 + 5, width / 2 + 5);
         }
@@ -347,8 +362,8 @@ public sealed class FloorPlanCanvas : FrameworkElement
         var arc = new StreamGeometry();
         using (var geometry = arc.Open())
         {
-            geometry.BeginFigure(jamb, false, false);
-            geometry.ArcTo(leafEnd, new Size(width, width), 0, false, SweepDirection.Counterclockwise, true, false);
+            geometry.BeginFigure(jamb, false);
+            geometry.ArcTo(leafEnd, new Size(width, width), 0, false, SweepDirection.CounterClockwise, true);
         }
         context.DrawGeometry(null, new Pen(DoorBrush, 1), arc);
         DrawScreenMeasurementLabel(context, openingStart, openingEnd, $"{door.Width:0.#} cm", MeasurementTextBrush, -18);
@@ -362,7 +377,7 @@ public sealed class FloorPlanCanvas : FrameworkElement
         var start = center - half;
         var end = center + half;
         var wallThickness = Math.Max(3, window.ParentWall.Thickness * _zoom + 3);
-        if (ReferenceEquals(SelectedElement, window))
+        if (IsSelected(window))
         {
             context.DrawLine(new Pen(SelectionBrush, wallThickness + 6), start, end);
         }
@@ -391,9 +406,9 @@ public sealed class FloorPlanCanvas : FrameworkElement
             var width = furniture.Width * _zoom;
             var height = furniture.Height * _zoom;
             var rect = new Rect(center.X - width / 2, center.Y - height / 2, width, height);
-            var selected = ReferenceEquals(SelectedElement, furniture);
-            context.PushTransform(new RotateTransform(furniture.RotationDegrees, center.X, center.Y));
-            context.DrawRoundedRectangle(new SolidColorBrush(Color.FromArgb(115, 235, 235, 232)),
+            var selected = IsSelected(furniture);
+            var transformState = context.PushTransform(CreateRotationAt(furniture.RotationDegrees, center));
+            context.DrawRectangle(new SolidColorBrush(Color.FromArgb(115, 235, 235, 232)),
                 new Pen(selected ? SelectionBrush : new SolidColorBrush(Color.FromArgb(150, 110, 110, 106)), selected ? 3 : 1.5),
                 rect, 5, 5);
             DrawFurnitureDetails(context, furniture, rect);
@@ -403,7 +418,7 @@ public sealed class FloorPlanCanvas : FrameworkElement
                 $"{furniture.Width:0.#} cm", MeasurementTextBrush, -15);
             DrawScreenMeasurementLabel(context, rect.TopRight, rect.BottomRight,
                 $"{furniture.Height:0.#} cm", MeasurementTextBrush, -15);
-            context.Pop();
+            transformState.Dispose();
         }
     }
 
@@ -414,7 +429,7 @@ public sealed class FloorPlanCanvas : FrameworkElement
         {
             case FurnitureKind.Bed:
                 context.DrawLine(pen, new Point(rect.Left, rect.Top + rect.Height * .28), new Point(rect.Right, rect.Top + rect.Height * .28));
-                context.DrawRoundedRectangle(null, pen, new Rect(rect.Left + 5, rect.Top + 5, Math.Max(8, rect.Width * .38), Math.Max(6, rect.Height * .2)), 3, 3);
+                context.DrawRectangle(null, pen, new Rect(rect.Left + 5, rect.Top + 5, Math.Max(8, rect.Width * .38), Math.Max(6, rect.Height * .2)), 3, 3);
                 break;
             case FurnitureKind.Sofa:
                 context.DrawLine(pen, new Point(rect.Left + 6, rect.Top + rect.Height * .28), new Point(rect.Right - 6, rect.Top + rect.Height * .28));
@@ -432,7 +447,7 @@ public sealed class FloorPlanCanvas : FrameworkElement
                 context.DrawEllipse(null, pen, new Point(rect.Left + rect.Width / 2, rect.Top + rect.Height * .62), Math.Max(5, rect.Width * .3), Math.Max(6, rect.Height * .28));
                 break;
             case FurnitureKind.DiningTable:
-                context.DrawRoundedRectangle(null, pen, new Rect(rect.Left + rect.Width * .15, rect.Top + rect.Height * .18, rect.Width * .7, rect.Height * .64), 5, 5);
+                context.DrawRectangle(null, pen, new Rect(rect.Left + rect.Width * .15, rect.Top + rect.Height * .18, rect.Width * .7, rect.Height * .64), 5, 5);
                 break;
             case FurnitureKind.Refrigerator:
                 context.DrawLine(pen, new Point(rect.Left, rect.Top + rect.Height * .38), new Point(rect.Right, rect.Top + rect.Height * .38));
@@ -447,7 +462,7 @@ public sealed class FloorPlanCanvas : FrameworkElement
                 break;
             case FurnitureKind.Bathtub:
             case FurnitureKind.Shower:
-                context.DrawRoundedRectangle(null, pen, new Rect(rect.Left + 6, rect.Top + 6, Math.Max(4, rect.Width - 12), Math.Max(4, rect.Height - 12)), 12, 12);
+                context.DrawRectangle(null, pen, new Rect(rect.Left + 6, rect.Top + 6, Math.Max(4, rect.Width - 12), Math.Max(4, rect.Height - 12)), 12, 12);
                 break;
             case FurnitureKind.Stairs:
                 for (var x = rect.Left + rect.Width / 10; x < rect.Right; x += Math.Max(5, rect.Width / 10))
@@ -472,13 +487,13 @@ public sealed class FloorPlanCanvas : FrameworkElement
         foreach (var label in FloorPlan.RoomLabels)
         {
             var center = WorldToScreen(label.Location);
-            var text = CreateText(label.Text, Math.Max(8, label.FontSize * _zoom), WallBrush, FontWeights.SemiBold);
+            var text = CreateText(label.Text, Math.Max(8, label.FontSize * _zoom), WallBrush, FontWeight.SemiBold);
             var rect = GetRoomLabelRect(label, text);
-            context.PushTransform(new RotateTransform(label.RotationDegrees, center.X, center.Y));
-            context.DrawRoundedRectangle(new SolidColorBrush(Color.FromArgb(200, 255, 255, 255)),
-                ReferenceEquals(SelectedElement, label) ? new Pen(SelectionBrush, 2) : null, rect, 4, 4);
+            var transformState = context.PushTransform(CreateRotationAt(label.RotationDegrees, center));
+            context.DrawRectangle(new SolidColorBrush(Color.FromArgb(200, 255, 255, 255)),
+                IsSelected(label) ? new Pen(SelectionBrush, 2) : null, rect, 4, 4);
             context.DrawText(text, new Point(center.X - text.Width / 2, center.Y - text.Height / 2));
-            context.Pop();
+            transformState.Dispose();
         }
     }
 
@@ -491,7 +506,7 @@ public sealed class FloorPlanCanvas : FrameworkElement
         foreach (var dimension in FloorPlan.Dimensions)
         {
             DrawDimension(context, dimension.StartPoint, dimension.EndPoint,
-                ReferenceEquals(SelectedElement, dimension));
+                IsSelected(dimension));
         }
     }
 
@@ -517,7 +532,7 @@ public sealed class FloorPlanCanvas : FrameworkElement
         context.DrawLine(pen, end, end - direction * 9 - normal * 4);
 
         var center = start + (end - start) * .5 + normal * 13;
-        var text = CreateText($"{length:0.#} cm", 11, pen.Brush, FontWeights.SemiBold);
+        var text = CreateText($"{length:0.#} cm", 11, pen.Brush ?? WallBrush, FontWeight.SemiBold);
         var background = new Rect(center.X - text.Width / 2 - 4, center.Y - text.Height / 2 - 2, text.Width + 8, text.Height + 4);
         context.DrawRectangle(Brushes.White, null, background);
         context.DrawText(text, new Point(center.X - text.Width / 2, center.Y - text.Height / 2));
@@ -525,12 +540,12 @@ public sealed class FloorPlanCanvas : FrameworkElement
 
     private void DrawSelectionHandles(DrawingContext context)
     {
-        if (SelectedElement is null || ActiveTool != EditorTool.Select)
+        if (_selectedElements.Count != 1 || ActiveTool != EditorTool.Select)
         {
             return;
         }
 
-        switch (SelectedElement)
+        switch (_selectedElements.First())
         {
             case Wall wall:
                 DrawHandle(context, WorldToScreen(wall.StartPoint), true);
@@ -569,6 +584,17 @@ public sealed class FloorPlanCanvas : FrameworkElement
                 DrawHandle(context, RotatePoint(GetRoomLabelRect(label).BottomRight, labelCenter, label.RotationDegrees), false);
                 break;
         }
+    }
+
+    private void DrawSelectionMarquee(DrawingContext context)
+    {
+        if (!_isMarqueeSelecting || ActiveTool != EditorTool.Select)
+        {
+            return;
+        }
+
+        var rect = CreateWorldRect(_marqueeStart, _marqueeEnd);
+        context.DrawRectangle(new SolidColorBrush(Color.FromArgb(35, 37, 99, 235)), _marqueePen, rect);
     }
 
     private static void DrawHandle(DrawingContext context, Point center, bool round)
@@ -622,13 +648,13 @@ public sealed class FloorPlanCanvas : FrameworkElement
         direction.Normalize();
         var normal = new Vector(-direction.Y, direction.X);
         var center = start + (end - start) * .5 + normal * 18;
-        var text = CreateText($"{length:0.#} cm", 12, MeasurementTextBrush, FontWeights.SemiBold);
+        var text = CreateText($"{length:0.#} cm", 12, MeasurementTextBrush, FontWeight.SemiBold);
         var background = new Rect(center.X - text.Width / 2 - 5, center.Y - text.Height / 2 - 2, text.Width + 10, text.Height + 4);
-        context.DrawRoundedRectangle(new SolidColorBrush(Color.FromArgb(225, 255, 255, 255)), null, background, 3, 3);
+        context.DrawRectangle(new SolidColorBrush(Color.FromArgb(225, 255, 255, 255)), null, background, 3, 3);
         context.DrawText(text, new Point(center.X - text.Width / 2, center.Y - text.Height / 2));
     }
 
-    private void DrawScreenMeasurementLabel(DrawingContext context, Point start, Point end, string value, Brush brush, double offset)
+    private void DrawScreenMeasurementLabel(DrawingContext context, Point start, Point end, string value, IBrush brush, double offset)
     {
         var direction = end - start;
         if (direction.Length < 1)
@@ -638,9 +664,9 @@ public sealed class FloorPlanCanvas : FrameworkElement
         direction.Normalize();
         var normal = new Vector(-direction.Y, direction.X);
         var center = start + (end - start) * .5 + normal * offset;
-        var text = CreateText(value, 10, brush, FontWeights.SemiBold);
+        var text = CreateText(value, 10, brush, FontWeight.SemiBold);
         var background = new Rect(center.X - text.Width / 2 - 4, center.Y - text.Height / 2 - 1, text.Width + 8, text.Height + 2);
-        context.DrawRoundedRectangle(new SolidColorBrush(Color.FromArgb(225, 255, 255, 255)), null, background, 3, 3);
+        context.DrawRectangle(new SolidColorBrush(Color.FromArgb(225, 255, 255, 255)), null, background, 3, 3);
         context.DrawText(text, new Point(center.X - text.Width / 2, center.Y - text.Height / 2));
     }
 
@@ -659,26 +685,40 @@ public sealed class FloorPlanCanvas : FrameworkElement
             EditorTool.Dimension when _dimensionStart is not null => "치수의 끝점을 클릭하세요",
             EditorTool.Dimension => "측정할 두 점을 차례로 클릭하세요",
             EditorTool.SiteElement => $"{GetSiteElementName(SelectedSiteElementKind)}을(를) 놓을 위치를 클릭하세요",
-            _ => "요소를 드래그해 이동하고 파란 핸들을 드래그해 크기를 조절하세요 · Delete: 삭제"
+            _ => "빈 공간/Shift+드래그: 범위 선택 · 선택 요소 드래그/방향키: 이동 · 파란 핸들: 크기 조절 · Delete: 삭제"
         };
         var text = CreateText(message + "  |  우클릭 드래그: 화면 이동  |  휠: 확대/축소", 12,
             new SolidColorBrush(Color.FromRgb(90, 98, 110)));
-        var y = Math.Max(8, ActualHeight - 36);
-        context.DrawRoundedRectangle(new SolidColorBrush(Color.FromArgb(230, 255, 255, 255)), null,
-            new Rect(12, y, Math.Min(text.Width + 20, Math.Max(0, ActualWidth - 24)), 26), 4, 4);
-        context.PushClip(new RectangleGeometry(new Rect(12, y, Math.Max(0, ActualWidth - 24), 26)));
+        var y = Math.Max(8, Bounds.Height - 36);
+        context.DrawRectangle(new SolidColorBrush(Color.FromArgb(230, 255, 255, 255)), null,
+            new Rect(12, y, Math.Min(text.Width + 20, Math.Max(0, Bounds.Width - 24)), 26), 4, 4);
+        var clipState = context.PushClip(new Rect(12, y, Math.Max(0, Bounds.Width - 24), 26));
         context.DrawText(text, new Point(22, y + 5));
-        context.Pop();
+        clipState.Dispose();
     }
 
-    private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        _activePointer = e.Pointer;
+        var properties = e.GetCurrentPoint(this).Properties;
+        if (properties.IsRightButtonPressed)
+        {
+            BeginPan(e);
+        }
+        else if (properties.IsLeftButtonPressed)
+        {
+            OnLeftPointerPressed(e);
+        }
+    }
+
+    private void OnLeftPointerPressed(PointerPressedEventArgs e)
     {
         Focus();
         if (FloorPlan is null)
         {
             return;
         }
-        var screen = e.GetPosition(this);
+        Point screen = e.GetPosition(this);
         var world = ScreenToWorld(screen);
         switch (ActiveTool)
         {
@@ -713,6 +753,11 @@ public sealed class FloorPlanCanvas : FrameworkElement
                 Select(siteElement);
                 break;
             case EditorTool.Select:
+                if (e.KeyModifiers.HasFlag(KeyModifiers.Shift))
+                {
+                    BeginMarqueeSelection(screen);
+                    break;
+                }
                 var handle = HitTestResizeHandle(screen);
                 if (handle != ResizeHandle.None)
                 {
@@ -720,7 +765,15 @@ public sealed class FloorPlanCanvas : FrameworkElement
                 }
                 else
                 {
-                    BeginElementDrag(HitTestElement(screen), world);
+                    var hitElement = HitTestElement(screen);
+                    if (hitElement is null)
+                    {
+                        BeginMarqueeSelection(screen);
+                    }
+                    else
+                    {
+                        BeginElementDrag(hitElement, world);
+                    }
                 }
                 break;
         }
@@ -810,38 +863,33 @@ public sealed class FloorPlanCanvas : FrameworkElement
 
     private void BeginElementDrag(PlanElement? element, Point world)
     {
-        Select(element);
         if (element is null)
         {
             return;
         }
+        if (!_selectedElements.Contains(element))
+        {
+            Select(element);
+        }
         _isDragging = true;
         _dragStartWorld = world;
-        switch (element)
+        _dragStates.Clear();
+        foreach (var selected in _selectedElements)
         {
-            case Wall wall:
-                _dragWallStart = wall.StartPoint;
-                _dragWallEnd = wall.EndPoint;
-                break;
-            case DimensionLine dimension:
-                _dragWallStart = dimension.StartPoint;
-                _dragWallEnd = dimension.EndPoint;
-                break;
-            case Furniture furniture:
-                _dragElementOrigin = furniture.Location;
-                break;
-            case RoomLabel label:
-                _dragElementOrigin = label.Location;
-                break;
-            case RoomArea room:
-                _dragRoomBounds = room.Bounds;
-                break;
-            case SiteElement siteElement:
-                _dragElementOrigin = siteElement.Location;
-                break;
+            _dragStates[selected] = CreateDragState(selected);
         }
-        CaptureMouse();
-        Cursor = Cursors.SizeAll;
+        _activePointer?.Capture(this);
+        Cursor = new Cursor(StandardCursorType.SizeAll);
+    }
+
+    private void BeginMarqueeSelection(Point screen)
+    {
+        SetSelection([]);
+        _isMarqueeSelecting = true;
+        _marqueeStart = screen;
+        _marqueeEnd = screen;
+        _activePointer?.Capture(this);
+        Cursor = new Cursor(StandardCursorType.Cross);
     }
 
     private void BeginElementResize(ResizeHandle handle, Point screen)
@@ -895,48 +943,68 @@ public sealed class FloorPlanCanvas : FrameworkElement
                 _resizeOriginalFontSize = label.FontSize;
                 break;
         }
-        CaptureMouse();
-        Cursor = Cursors.SizeNWSE;
+        _activePointer?.Capture(this);
+        Cursor = new Cursor(StandardCursorType.TopLeftCorner);
     }
 
-    private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
-        if (!_isDragging && _activeResizeHandle == ResizeHandle.None)
+        if (_isPanning)
+        {
+            EndPan(e);
+        }
+        else
+        {
+            EndLeftPointer(e);
+        }
+    }
+
+    private void EndLeftPointer(PointerReleasedEventArgs e)
+    {
+        if (!_isDragging && !_isMarqueeSelecting && _activeResizeHandle == ResizeHandle.None)
         {
             return;
         }
+        if (_isMarqueeSelecting)
+        {
+            CompleteMarqueeSelection();
+        }
         _isDragging = false;
+        _isMarqueeSelecting = false;
         _activeResizeHandle = ResizeHandle.None;
-        ReleaseMouseCapture();
-        Cursor = ActiveTool == EditorTool.Wall ? Cursors.Cross : Cursors.Arrow;
+        _dragStates.Clear();
+        _activePointer?.Capture(null);
+        _activePointer = null;
+        Cursor = CursorForActiveTool();
         e.Handled = true;
     }
 
-    private void BeginPan(object sender, MouseButtonEventArgs e)
+    private void BeginPan(PointerPressedEventArgs e)
     {
         _isPanning = true;
         _panStart = e.GetPosition(this);
         _panOrigin = _panOffset;
-        CaptureMouse();
-        Cursor = Cursors.Hand;
+        _activePointer?.Capture(this);
+        Cursor = new Cursor(StandardCursorType.Hand);
         e.Handled = true;
     }
 
-    private void EndPan(object sender, MouseButtonEventArgs e)
+    private void EndPan(PointerReleasedEventArgs e)
     {
         if (!_isPanning)
         {
             return;
         }
         _isPanning = false;
-        ReleaseMouseCapture();
-        Cursor = ActiveTool == EditorTool.Wall ? Cursors.Cross : Cursors.Arrow;
+        _activePointer?.Capture(null);
+        _activePointer = null;
+        Cursor = CursorForActiveTool();
         e.Handled = true;
     }
 
-    private void OnMouseMove(object sender, MouseEventArgs e)
+    private void OnPointerMoved(object? sender, PointerEventArgs e)
     {
-        var screen = e.GetPosition(this);
+        Point screen = e.GetPosition(this);
         if (_isPanning)
         {
             _panOffset = _panOrigin + (screen - _panStart);
@@ -950,9 +1018,15 @@ public sealed class FloorPlanCanvas : FrameworkElement
             InvalidateVisual();
             return;
         }
-        if (_isDragging && SelectedElement is not null)
+        if (_isDragging && _selectedElements.Count > 0)
         {
-            MoveSelectedElement(world);
+            MoveSelectedElements(world);
+            InvalidateVisual();
+            return;
+        }
+        if (_isMarqueeSelecting)
+        {
+            _marqueeEnd = screen;
             InvalidateVisual();
             return;
         }
@@ -963,42 +1037,148 @@ public sealed class FloorPlanCanvas : FrameworkElement
         }
     }
 
-    private void MoveSelectedElement(Point pointerWorld)
+    private void MoveSelectedElements(Point pointerWorld)
     {
         var delta = pointerWorld - _dragStartWorld;
-        switch (SelectedElement)
+        if (IsGridSnapEnabled && GridSize > 0)
+        {
+            delta = new Vector(Math.Round(delta.X / GridSize) * GridSize,
+                Math.Round(delta.Y / GridSize) * GridSize);
+        }
+        foreach (var selected in _selectedElements)
+        {
+            if (_dragStates.TryGetValue(selected, out var state))
+            {
+                ApplyDragState(selected, state, delta);
+            }
+        }
+    }
+
+    private ElementDragState CreateDragState(PlanElement element) => element switch
+    {
+        Wall wall => new ElementDragState(wall.StartPoint, wall.EndPoint, default),
+        DimensionLine dimension => new ElementDragState(dimension.StartPoint, dimension.EndPoint, default),
+        WallOpening opening => new ElementDragState(GetOpeningWorldCenter(opening), default, default),
+        Furniture furniture => new ElementDragState(furniture.Location, default, default),
+        RoomLabel label => new ElementDragState(label.Location, default, default),
+        RoomArea room => new ElementDragState(default, default, room.Bounds),
+        SiteElement siteElement => new ElementDragState(siteElement.Location, default, default),
+        _ => default
+    };
+
+    private void ApplyDragState(PlanElement element, ElementDragState state, Vector delta)
+    {
+        switch (element)
         {
             case Wall wall:
-                var snappedStart = SnapPoint(_dragWallStart + delta);
-                var snappedDelta = snappedStart - _dragWallStart;
-                wall.StartPoint = _dragWallStart + snappedDelta;
-                wall.EndPoint = _dragWallEnd + snappedDelta;
+                wall.StartPoint = state.First + delta;
+                wall.EndPoint = state.Second + delta;
+                ConstrainOpeningsToWall(wall);
                 break;
             case DimensionLine dimension:
-                var dimensionStart = SnapPoint(_dragWallStart + delta);
-                var dimensionDelta = dimensionStart - _dragWallStart;
-                dimension.StartPoint = _dragWallStart + dimensionDelta;
-                dimension.EndPoint = _dragWallEnd + dimensionDelta;
+                dimension.StartPoint = state.First + delta;
+                dimension.EndPoint = state.Second + delta;
                 break;
-            case WallOpening opening:
+            case WallOpening opening when !_selectedElements.Contains(opening.ParentWall):
                 opening.Position = ClampOpeningPosition(opening.ParentWall,
-                    ProjectToWall(opening.ParentWall, pointerWorld), opening.Width);
+                    ProjectToWall(opening.ParentWall, state.First + delta), opening.Width);
                 break;
             case Furniture furniture:
-                furniture.Location = SnapPoint(_dragElementOrigin + delta);
+                furniture.Location = state.First + delta;
                 break;
             case RoomLabel label:
-                label.Location = SnapPoint(_dragElementOrigin + delta);
+                label.Location = state.First + delta;
                 break;
             case RoomArea room:
-                var roomOrigin = SnapPoint(new Point(_dragRoomBounds.X + delta.X, _dragRoomBounds.Y + delta.Y));
-                room.Bounds = new Rect(roomOrigin.X, roomOrigin.Y, _dragRoomBounds.Width, _dragRoomBounds.Height);
+                room.Bounds = new Rect(state.Bounds.X + delta.X, state.Bounds.Y + delta.Y,
+                    state.Bounds.Width, state.Bounds.Height);
                 break;
             case SiteElement siteElement:
-                siteElement.Location = SnapPoint(_dragElementOrigin + delta);
+                siteElement.Location = state.First + delta;
                 break;
         }
     }
+
+    private void CompleteMarqueeSelection()
+    {
+        var selectionBounds = CreateWorldRect(_marqueeStart, _marqueeEnd);
+        if (selectionBounds.Width < 3 && selectionBounds.Height < 3)
+        {
+            SetSelection([]);
+            return;
+        }
+
+        SetSelection(EnumeratePlanElements()
+            .Where(element => Intersects(selectionBounds, GetElementScreenBounds(element))));
+    }
+
+    private IEnumerable<PlanElement> EnumeratePlanElements()
+    {
+        if (FloorPlan is null)
+        {
+            yield break;
+        }
+
+        foreach (var element in FloorPlan.RoomAreas) yield return element;
+        foreach (var element in FloorPlan.SiteElements) yield return element;
+        foreach (var element in FloorPlan.FurnitureItems) yield return element;
+        foreach (var element in FloorPlan.Walls) yield return element;
+        foreach (var element in FloorPlan.Doors) yield return element;
+        foreach (var element in FloorPlan.Windows) yield return element;
+        foreach (var element in FloorPlan.RoomLabels) yield return element;
+        foreach (var element in FloorPlan.Dimensions) yield return element;
+    }
+
+    private Rect GetElementScreenBounds(PlanElement element) => element switch
+    {
+        Wall wall => BoundsFromPoints([WorldToScreen(wall.StartPoint), WorldToScreen(wall.EndPoint)],
+            Math.Max(6, wall.Thickness * _zoom / 2)),
+        DimensionLine dimension => BoundsFromPoints(
+            [WorldToScreen(dimension.StartPoint), WorldToScreen(dimension.EndPoint)], 8),
+        WallOpening opening => GetOpeningScreenBounds(opening),
+        Furniture furniture => BoundsFromPoints(GetFurnitureCorners(furniture), 5),
+        RoomLabel label => GetRoomLabelScreenBounds(label),
+        RoomArea room => WorldRectToScreen(room.Bounds),
+        SiteElement siteElement => BoundsFromPoints(GetSiteElementCorners(siteElement), 5),
+        _ => default
+    };
+
+    private Rect GetOpeningScreenBounds(WallOpening opening)
+    {
+        var (center, tangent, _) = GetOpeningScreenGeometry(opening);
+        var half = tangent * (opening.Width * _zoom / 2);
+        return BoundsFromPoints([center - half, center + half], 10);
+    }
+
+    private Rect GetRoomLabelScreenBounds(RoomLabel label)
+    {
+        var rect = GetRoomLabelRect(label);
+        var center = WorldToScreen(label.Location);
+        return BoundsFromPoints([
+            RotatePoint(rect.TopLeft, center, label.RotationDegrees),
+            RotatePoint(rect.TopRight, center, label.RotationDegrees),
+            RotatePoint(rect.BottomLeft, center, label.RotationDegrees),
+            RotatePoint(rect.BottomRight, center, label.RotationDegrees)
+        ], 3);
+    }
+
+    private static Rect BoundsFromPoints(IEnumerable<Point> points, double padding)
+    {
+        var pointList = points.ToList();
+        if (pointList.Count == 0)
+        {
+            return default;
+        }
+        var left = pointList.Min(point => point.X) - padding;
+        var top = pointList.Min(point => point.Y) - padding;
+        var right = pointList.Max(point => point.X) + padding;
+        var bottom = pointList.Max(point => point.Y) + padding;
+        return new Rect(left, top, right - left, bottom - top);
+    }
+
+    private static bool Intersects(Rect first, Rect second) =>
+        first.Left <= second.Right && first.Right >= second.Left
+        && first.Top <= second.Bottom && first.Bottom >= second.Top;
 
     private void ResizeSelectedElement(Point pointerScreen, Point pointerWorld)
     {
@@ -1100,8 +1280,25 @@ public sealed class FloorPlanCanvas : FrameworkElement
         projected = _activeResizeHandle == ResizeHandle.OpeningStart
             ? Math.Clamp(projected, 0, Math.Max(0, _resizeOpeningFixedPosition - minimumPositionWidth))
             : Math.Clamp(projected, Math.Min(1, _resizeOpeningFixedPosition + minimumPositionWidth), 1);
+
+        if (opening is WindowElement)
+        {
+            var maximumWidth = (_activeResizeHandle == ResizeHandle.OpeningStart
+                ? _resizeOpeningFixedPosition
+                : 1 - _resizeOpeningFixedPosition) * wallLength;
+            var minimumWidth = Math.Min(20, Math.Floor(maximumWidth));
+            var roundedWidth = Math.Clamp(
+                Math.Round(Math.Abs(projected - _resizeOpeningFixedPosition) * wallLength,
+                    MidpointRounding.AwayFromZero),
+                minimumWidth, Math.Floor(maximumWidth));
+            var direction = _activeResizeHandle == ResizeHandle.OpeningStart ? -1 : 1;
+            projected = _resizeOpeningFixedPosition + direction * roundedWidth / wallLength;
+        }
         opening.Position = (projected + _resizeOpeningFixedPosition) / 2;
-        opening.Width = Math.Abs(projected - _resizeOpeningFixedPosition) * wallLength;
+        var resizedWidth = Math.Abs(projected - _resizeOpeningFixedPosition) * wallLength;
+        opening.Width = opening is WindowElement
+            ? Math.Round(resizedWidth, MidpointRounding.AwayFromZero)
+            : resizedWidth;
     }
 
     private void ConstrainOpeningsToWall(Wall wall)
@@ -1118,11 +1315,11 @@ public sealed class FloorPlanCanvas : FrameworkElement
         }
     }
 
-    private void OnMouseWheel(object sender, MouseWheelEventArgs e)
+    private void OnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
     {
-        var mouse = e.GetPosition(this);
+        Point mouse = e.GetPosition(this);
         var worldAtMouse = ScreenToWorld(mouse);
-        var factor = e.Delta > 0 ? 1.15 : 1 / 1.15;
+        var factor = e.Delta.Y > 0 ? 1.15 : 1 / 1.15;
         _zoom = Math.Clamp(_zoom * factor, MinimumZoom, MaximumZoom);
         _panOffset = new Point(mouse.X - worldAtMouse.X * _zoom, mouse.Y - worldAtMouse.Y * _zoom);
         InvalidateVisual();
@@ -1137,19 +1334,79 @@ public sealed class FloorPlanCanvas : FrameworkElement
             _wallStart = null;
             _roomStart = null;
             _dimensionStart = null;
+            _isMarqueeSelecting = false;
             if (ActiveTool == EditorTool.Select)
             {
-                Select(null);
+                SetSelection([]);
             }
             InvalidateVisual();
             e.Handled = true;
         }
-        else if (e.Key == Key.Delete && SelectedElement is not null && FloorPlan is not null)
+        else if (e.Key == Key.Delete && _selectedElements.Count > 0 && FloorPlan is not null)
         {
-            FloorPlan.Remove(SelectedElement);
-            Select(null);
+            foreach (var element in _selectedElements.ToList())
+            {
+                FloorPlan.Remove(element);
+            }
+            SetSelection([]);
             InvalidateVisual();
             e.Handled = true;
+        }
+        else if (_selectedElements.Count > 0 && TryGetArrowDelta(e.Key, out var direction))
+        {
+            var step = e.KeyModifiers.HasFlag(KeyModifiers.Shift) ? 10 : 1;
+            MoveSelectionBy(direction * step);
+            InvalidateVisual();
+            e.Handled = true;
+        }
+    }
+
+    private static bool TryGetArrowDelta(Key key, out Vector delta)
+    {
+        delta = key switch
+        {
+            Key.Left => new Vector(-1, 0),
+            Key.Right => new Vector(1, 0),
+            Key.Up => new Vector(0, -1),
+            Key.Down => new Vector(0, 1),
+            _ => default
+        };
+        return key is Key.Left or Key.Right or Key.Up or Key.Down;
+    }
+
+    private void MoveSelectionBy(Vector delta)
+    {
+        foreach (var selected in _selectedElements)
+        {
+            switch (selected)
+            {
+                case Wall wall:
+                    wall.StartPoint += delta;
+                    wall.EndPoint += delta;
+                    ConstrainOpeningsToWall(wall);
+                    break;
+                case DimensionLine dimension:
+                    dimension.StartPoint += delta;
+                    dimension.EndPoint += delta;
+                    break;
+                case WallOpening opening when !_selectedElements.Contains(opening.ParentWall):
+                    opening.Position = ClampOpeningPosition(opening.ParentWall,
+                        ProjectToWall(opening.ParentWall, GetOpeningWorldCenter(opening) + delta), opening.Width);
+                    break;
+                case Furniture furniture:
+                    furniture.Location += delta;
+                    break;
+                case RoomLabel label:
+                    label.Location += delta;
+                    break;
+                case RoomArea room:
+                    room.Bounds = new Rect(room.Bounds.X + delta.X, room.Bounds.Y + delta.Y,
+                        room.Bounds.Width, room.Bounds.Height);
+                    break;
+                case SiteElement siteElement:
+                    siteElement.Location += delta;
+                    break;
+            }
         }
     }
 
@@ -1232,6 +1489,10 @@ public sealed class FloorPlanCanvas : FrameworkElement
 
     private ResizeHandle HitTestResizeHandle(Point screen)
     {
+        if (_selectedElements.Count != 1)
+        {
+            return ResizeHandle.None;
+        }
         const double tolerance = 10;
         switch (SelectedElement)
         {
@@ -1429,7 +1690,7 @@ public sealed class FloorPlanCanvas : FrameworkElement
 
     private Rect GetRoomLabelRect(RoomLabel label)
     {
-        var text = CreateText(label.Text, Math.Max(8, label.FontSize * _zoom), WallBrush, FontWeights.SemiBold);
+        var text = CreateText(label.Text, Math.Max(8, label.FontSize * _zoom), WallBrush, FontWeight.SemiBold);
         return GetRoomLabelRect(label, text);
     }
 
@@ -1455,6 +1716,10 @@ public sealed class FloorPlanCanvas : FrameworkElement
         var center = start + (end - start) * opening.Position;
         return (center, tangent, new Vector(-tangent.Y, tangent.X));
     }
+
+    private static Point GetOpeningWorldCenter(WallOpening opening) =>
+        opening.ParentWall.StartPoint
+        + (opening.ParentWall.EndPoint - opening.ParentWall.StartPoint) * opening.Position;
 
     private static double ProjectToWall(Wall wall, Point point)
     {
@@ -1494,20 +1759,38 @@ public sealed class FloorPlanCanvas : FrameworkElement
         return new Point(Math.Round(point.X / GridSize) * GridSize, Math.Round(point.Y / GridSize) * GridSize);
     }
 
-    private void Select(PlanElement? element) => SetCurrentValue(SelectedElementProperty, element);
+    private bool IsSelected(PlanElement element) => _selectedElements.Contains(element);
+
+    private void Select(PlanElement? element) => SetSelection(element is null ? [] : [element]);
+
+    private void SetSelection(IEnumerable<PlanElement> elements)
+    {
+        _selectedElements.Clear();
+        foreach (var element in elements.Distinct())
+        {
+            _selectedElements.Add(element);
+        }
+
+        _isUpdatingSelectionProperty = true;
+        SetCurrentValue(SelectedElementProperty,
+            _selectedElements.Count == 1 ? _selectedElements.First() : null);
+        SetCurrentValue(SelectionCountProperty, _selectedElements.Count);
+        _isUpdatingSelectionProperty = false;
+        InvalidateVisual();
+    }
 
     private Point WorldToScreen(Point point) => new(point.X * _zoom + _panOffset.X, point.Y * _zoom + _panOffset.Y);
 
     private Point ScreenToWorld(Point point) => new((point.X - _panOffset.X) / _zoom, (point.Y - _panOffset.Y) / _zoom);
 
-    private FormattedText CreateText(string value, double size, Brush brush, FontWeight? weight = null) =>
+    private static FormattedText CreateText(string value, double size, IBrush brush, FontWeight? weight = null) =>
         new(value, CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
-            new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, weight ?? FontWeights.Normal, FontStretches.Normal),
-            size, brush, VisualTreeHelper.GetDpi(this).PixelsPerDip);
+            new Typeface(new FontFamily("Inter"), FontStyle.Normal, weight ?? FontWeight.Normal, FontStretch.Normal),
+            size, brush);
 
-    private void DrawCenteredText(DrawingContext context, string value, Point center, double size, Brush brush)
+    private void DrawCenteredText(DrawingContext context, string value, Point center, double size, IBrush brush)
     {
-        var text = CreateText(value, size, brush, FontWeights.SemiBold);
+        var text = CreateText(value, size, brush, FontWeight.SemiBold);
         context.DrawText(text, new Point(center.X - text.Width / 2, center.Y - text.Height / 2));
     }
 
@@ -1538,31 +1821,54 @@ public sealed class FloorPlanCanvas : FrameworkElement
         _ => kind.ToString()
     };
 
-    private static void OnToolChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private void OnToolChanged(EditorTool newTool)
     {
-        var canvas = (FloorPlanCanvas)d;
-        canvas._wallStart = null;
-        canvas._roomStart = null;
-        canvas._dimensionStart = null;
-        canvas._isDragging = false;
-        canvas._activeResizeHandle = ResizeHandle.None;
-        canvas.Cursor = (EditorTool)e.NewValue == EditorTool.Wall ? Cursors.Cross : Cursors.Arrow;
-        canvas.InvalidateVisual();
+        _wallStart = null;
+        _roomStart = null;
+        _dimensionStart = null;
+        _isDragging = false;
+        _isMarqueeSelecting = false;
+        _activeResizeHandle = ResizeHandle.None;
+        Cursor = new Cursor(newTool == EditorTool.Wall ? StandardCursorType.Cross : StandardCursorType.Arrow);
+        InvalidateVisual();
     }
 
-    private static void OnFloorPlanChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var canvas = (FloorPlanCanvas)d;
-        if (e.OldValue is FloorPlan oldPlan)
+        base.OnPropertyChanged(change);
+        if (change.Property == FloorPlanProperty)
         {
-            canvas.SubscribeToPlan(oldPlan, false);
+            if (change.OldValue is FloorPlan oldPlan)
+            {
+                SubscribeToPlan(oldPlan, false);
+            }
+            if (change.NewValue is FloorPlan newPlan)
+            {
+                SubscribeToPlan(newPlan, true);
+            }
+            SetSelection([]);
         }
-        if (e.NewValue is FloorPlan newPlan)
+        else if (change.Property == ActiveToolProperty && change.NewValue is EditorTool newTool)
         {
-            canvas.SubscribeToPlan(newPlan, true);
+            OnToolChanged(newTool);
         }
-        canvas.InvalidateVisual();
+        else if (change.Property == SelectedElementProperty && !_isUpdatingSelectionProperty)
+        {
+            _selectedElements.Clear();
+            if (change.NewValue is PlanElement selected)
+            {
+                _selectedElements.Add(selected);
+            }
+            SetCurrentValue(SelectionCountProperty, _selectedElements.Count);
+        }
+        InvalidateVisual();
     }
+
+    private Cursor CursorForActiveTool() => new(
+        ActiveTool == EditorTool.Wall ? StandardCursorType.Cross : StandardCursorType.Arrow);
+
+    private static Matrix CreateRotationAt(double degrees, Point center) =>
+        Matrix.CreateRotation(degrees * Math.PI / 180, center);
 
     private void SubscribeToPlan(FloorPlan plan, bool subscribe)
     {
@@ -1604,6 +1910,7 @@ public sealed class FloorPlanCanvas : FrameworkElement
             foreach (PlanElement element in e.OldItems)
             {
                 element.PropertyChanged -= OnElementPropertyChanged;
+                _selectedElements.Remove(element);
             }
         }
         if (e.NewItems is not null)
@@ -1613,6 +1920,14 @@ public sealed class FloorPlanCanvas : FrameworkElement
                 element.PropertyChanged += OnElementPropertyChanged;
             }
         }
+        if (_selectedElements.Count <= 1)
+        {
+            _isUpdatingSelectionProperty = true;
+            SetCurrentValue(SelectedElementProperty,
+                _selectedElements.Count == 1 ? _selectedElements.First() : null);
+            _isUpdatingSelectionProperty = false;
+        }
+        SetCurrentValue(SelectionCountProperty, _selectedElements.Count);
         InvalidateVisual();
     }
 

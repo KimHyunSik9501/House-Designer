@@ -1,13 +1,12 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.IO;
-using System.Windows;
 using HouseDesigner.Models;
 
 namespace HouseDesigner.Services;
 
 /// <summary>
-/// UI나 WPF 렌더링 형식에 의존하지 않는 JSON 문서 저장소입니다.
+/// UI 렌더링 형식에 의존하지 않는 JSON 문서 저장소입니다.
 /// 문과 창문은 부모 벽의 목록 인덱스로 연결해 복원합니다.
 /// </summary>
 public static class PlanDocumentService
